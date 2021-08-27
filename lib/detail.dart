@@ -1,10 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todoapp/form.dart';
 import 'package:todoapp/operation.dart';
-import 'dart:convert';
-import "package:intl/intl.dart";
-import 'package:todoapp/main.dart';
+import 'package:intl/intl.dart';
 
 class DetailPage extends StatelessWidget {
   @override
@@ -12,40 +10,40 @@ class DetailPage extends StatelessWidget {
     var id = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Todo"),
+        title: const Text('Todo'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: const Icon(Icons.arrow_back_ios_sharp),
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              "/home",
+              '/home',
               (_) => false,
             );
           },
         ),
         actions: [
           IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               color: Colors.white,
               iconSize: 40,
               onPressed: () {
-                Navigator.pushNamed(context, "/setting");
+                Navigator.pushNamed(context, '/setting');
               })
         ],
       ),
       body: Detail(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, "/form", arguments: id);
+          Navigator.pushNamed(context, '/form', arguments: id);
         },
-        child: Icon(Icons.edit),
+        child: const Icon(Icons.edit),
       ),
     );
   }
 }
 
 class Detail extends StatelessWidget {
-  final datetimeformat = DateFormat("y-M-d HH:mm");
+  final datetimeformat = DateFormat('y-M-d HH:mm');
   @override
   Widget build(BuildContext context) {
     var id = ModalRoute.of(context)!.settings.arguments;
@@ -57,7 +55,7 @@ class Detail extends StatelessWidget {
           if (snapshot.hasData) {
             final data = snapshot.data;
             return DefaultTextStyle(
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 color: Colors.black,
                 height: 2,
@@ -68,11 +66,11 @@ class Detail extends StatelessWidget {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
+                          const Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Text("タイトル：")),
+                              child: Text('タイトル：')),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
                               width: 250,
                               child: Text(
@@ -86,23 +84,23 @@ class Detail extends StatelessWidget {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
+                          const Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Text("〆切日時：")),
+                              child: Text('〆切日時：')),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "${datetimeformat.format(DateTime.parse(data['date']))}",
+                              '''${datetimeformat.format(DateTime.parse(data['date']))}''',
                             ),
                           )
                         ]),
-                    Text("画像"),
-                    (data["image"] == "null" || data["image"] == "")
-                        ? Text("画像はありません")
+                    const Text('画像'),
+                    (data['image'] == 'null' || data['image'] == '')
+                        ? const Text('画像はありません')
                         : ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: 300, maxHeight: 300),
-                            child: Image.memory(base64Decode(data["image"]))),
+                            constraints: const BoxConstraints(
+                                maxWidth: 300, maxHeight: 300),
+                            child: Image.memory(base64Decode(data['image']))),
                   ]),
             );
           } else {

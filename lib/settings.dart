@@ -7,9 +7,9 @@ class SettingPage2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Setting"),
+        title: const Text('Setting'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: const Icon(Icons.arrow_back_ios_sharp),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -34,13 +34,13 @@ class _SettingPageState extends State<SettingPage> {
 
   setpreferences(bool value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("notificationbool", value);
+    prefs.setBool('notificationbool', value);
   }
 
   getpreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      switchvalue = prefs.getBool("notificationbool") ?? true;
+      switchvalue = prefs.getBool('notificationbool') ?? true;
     });
   }
 
@@ -56,8 +56,8 @@ class _SettingPageState extends State<SettingPage> {
       body: Center(
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          Text(
-            "通知",
+          const Text(
+            '通知',
             style: TextStyle(
               fontSize: 20,
             ),

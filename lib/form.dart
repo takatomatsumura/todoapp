@@ -1,30 +1,30 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:todoapp/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'dart:convert';
-import "package:intl/intl.dart";
-import 'dart:async';
+import 'package:intl/intl.dart';
 
 class FormPage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Todo"),
+        title: const Text('Todo'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: const Icon(Icons.arrow_back_ios_sharp),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               color: Colors.white,
               iconSize: 40,
               onPressed: () {
-                Navigator.pushNamed(context, "/setting");
+                Navigator.pushNamed(context, '/setting');
               })
         ],
       ),
@@ -47,13 +47,13 @@ class _FormPageState extends State<_FormPage> {
   final titleController = TextEditingController();
   final dateController = TextEditingController();
   final timeController = TextEditingController();
-  final datetimeformat = DateFormat("y-M-d HH:mm");
-  String datestring = "";
-  String timestring = "";
+  final datetimeformat = DateFormat('y-M-d HH:mm');
+  String datestring = '';
+  String timestring = '';
   var _image;
   final picker = ImagePicker();
   var uintlist;
-  String img64 = "";
+  String img64 = '';
 
   Future _getImagecamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
@@ -93,35 +93,35 @@ class _FormPageState extends State<_FormPage> {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: titleController,
                       autofocus: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "タイトル",
-                        labelText: "タイトル",
+                        hintText: 'タイトル',
+                        labelText: 'タイトル',
                         filled: true,
                       ),
                       validator: (titlevalue) {
                         if (titlevalue == null || titlevalue.isEmpty) {
                           return '必須項目です';
                         } else if (200 <= titlevalue.length) {
-                          return "200文字までしか入力できません。";
+                          return '200文字までしか入力できません。';
                         }
                       },
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Stack(children: <Widget>[
                       TextFormField(
                         controller: dateController,
                         readOnly: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "〆切日時",
-                          labelText: "〆切日時",
+                          hintText: '〆切日時',
+                          labelText: '〆切日時',
                           filled: true,
                         ),
                         validator: (datevalue) {
@@ -144,7 +144,7 @@ class _FormPageState extends State<_FormPage> {
 
                             if (selectedDate != null) {
                               datestring =
-                                  "${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ";
+                                  '''${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ''';
                             }
                             dateController.text = datestring;
                           },
@@ -154,15 +154,15 @@ class _FormPageState extends State<_FormPage> {
                     ]),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Stack(children: <Widget>[
                       TextFormField(
                         controller: timeController,
                         readOnly: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: "〆切時間",
-                            labelText: "〆切時間",
+                            hintText: '〆切時間',
+                            labelText: '〆切時間',
                             filled: true),
                         validator: (timevalue) {
                           if (timevalue == null || timevalue.isEmpty) {
@@ -183,7 +183,7 @@ class _FormPageState extends State<_FormPage> {
 
                             if (selectedTime != null) {
                               timestring =
-                                  "${selectedTime.hour}:${selectedTime.minute}";
+                                  '${selectedTime.hour}:${selectedTime.minute}';
                             }
                             timeController.text = timestring;
                           },
@@ -193,37 +193,37 @@ class _FormPageState extends State<_FormPage> {
                     ]),
                   ),
                   _image == null
-                      ? Padding(
+                      ? const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text("画像が選択されていません。"),
+                          child: Text('画像が選択されていません。'),
                         )
                       : Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxHeight: 300, maxWidth: 300),
+                            constraints: const BoxConstraints(
+                                maxHeight: 300, maxWidth: 300),
                             child: Image.file(_image),
                           )),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         ElevatedButton(
-                          child: Icon(Icons.camera_alt),
+                          child: const Icon(Icons.camera_alt),
                           style: ElevatedButton.styleFrom(
                             primary: Colors.blue,
                             onPrimary: Colors.white,
-                            shape: CircleBorder(),
+                            shape: const CircleBorder(),
                           ),
                           onPressed: () {
                             _getImagecamera();
                           },
                         ),
                         ElevatedButton(
-                          child: Icon(Icons.photo),
+                          child: const Icon(Icons.photo),
                           style: ElevatedButton.styleFrom(
                             primary: Colors.blue,
                             onPrimary: Colors.white,
-                            shape: CircleBorder(),
+                            shape: const CircleBorder(),
                           ),
                           onPressed: () {
                             _getImagegallery();
@@ -231,16 +231,16 @@ class _FormPageState extends State<_FormPage> {
                         ),
                       ]),
                   RaisedButton(
-                    child: Text("保存"),
+                    child: const Text('保存'),
                     onPressed: () {
                       if (_formkey.currentState!.validate()) {
-                        if (id == "") {
+                        if (id == '') {
                           Notificationoperation().notification();
                           LocalDatabase().postData(titleController.text,
                               datestring + timestring, img64);
                           Navigator.pushNamedAndRemoveUntil(
                             context,
-                            "/home",
+                            '/home',
                             (_) => false,
                           );
                         } else {
@@ -251,11 +251,11 @@ class _FormPageState extends State<_FormPage> {
                             datestring + timestring,
                             img64,
                           );
-                          Navigator.pushNamed(context, "/detail",
+                          Navigator.pushNamed(context, '/detail',
                               arguments: id);
                         }
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Processing Data"),
+                        Scaffold.of(context).showSnackBar(const SnackBar(
+                          content: Text('Processing Data'),
                         ));
                       }
                     },
