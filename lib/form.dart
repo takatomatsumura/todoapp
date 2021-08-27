@@ -1,5 +1,4 @@
 import 'package:todoapp/operation.dart';
-import 'package:todoapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -51,13 +50,6 @@ class _FormPageState extends State<_FormPage> {
   final datetimeformat = DateFormat("y-M-d HH:mm");
   String datestring = "";
   String timestring = "";
-  // String month = "";
-  // String day = "";
-  // String hour = "";
-  // String minute = "";
-  // String datetimedate = "";
-  // String datetimetime = "";
-  // int datetime = 0;
   var _image;
   final picker = ImagePicker();
   var uintlist;
@@ -153,17 +145,6 @@ class _FormPageState extends State<_FormPage> {
                             if (selectedDate != null) {
                               datestring =
                                   "${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ";
-                              //   if (selectedDate.month < 10) {
-                              //     month = "0${selectedDate.month}";
-                              //   } else {
-                              //     month = "${selectedDate.month}";
-                              //   }
-                              //   if (selectedDate.day < 10) {
-                              //     day = "0${selectedDate.day}";
-                              //   } else {
-                              //     day = "${selectedDate.day}";
-                              //   }
-                              //   datetimedate = "${selectedDate.year}$month$day";
                             }
                             dateController.text = datestring;
                           },
@@ -203,17 +184,6 @@ class _FormPageState extends State<_FormPage> {
                             if (selectedTime != null) {
                               timestring =
                                   "${selectedTime.hour}:${selectedTime.minute}";
-                              // if (selectedTime.hour < 10) {
-                              //   hour = "0${selectedTime.hour}";
-                              // } else {
-                              //   hour = "${selectedTime.hour}";
-                              // }
-                              // if (selectedTime.minute < 10) {
-                              //   minute = "0${selectedTime.minute}";
-                              // } else {
-                              //   minute = "${selectedTime.minute}";
-                              // }
-                              // datetimetime = "$hour$minute";
                             }
                             timeController.text = timestring;
                           },
@@ -264,15 +234,8 @@ class _FormPageState extends State<_FormPage> {
                     child: Text("保存"),
                     onPressed: () {
                       if (_formkey.currentState!.validate()) {
-                        // datetime = int.parse(datetimedate + datetimetime);
                         if (id == "") {
-                          // Databaseoperation().save(
-                          //     titleController.text,
-                          //     dateController.text,
-                          //     timeController.text,
-                          //     datetime,
-                          //     img64);
-                          // Notificationoperation().notification();
+                          Notificationoperation().notification();
                           LocalDatabase().postData(titleController.text,
                               datestring + timestring, img64);
                           Navigator.pushNamedAndRemoveUntil(
@@ -281,14 +244,7 @@ class _FormPageState extends State<_FormPage> {
                             (_) => false,
                           );
                         } else {
-                          // Databaseoperation().update(
-                          //     id,
-                          //     titleController.text,
-                          //     dateController.text,
-                          //     timeController.text,
-                          //     datetime,
-                          //     img64);
-                          // Notificationoperation().notification();
+                          Notificationoperation().notification();
                           LocalDatabase().updateData(
                             id,
                             titleController.text,
@@ -297,7 +253,6 @@ class _FormPageState extends State<_FormPage> {
                           );
                           Navigator.pushNamed(context, "/detail",
                               arguments: id);
-                          // Navigator.pop(context);
                         }
                         Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text("Processing Data"),

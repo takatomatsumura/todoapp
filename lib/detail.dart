@@ -21,7 +21,6 @@ class DetailPage extends StatelessWidget {
               "/home",
               (_) => false,
             );
-            // Navigator.pop(context);
           },
         ),
         actions: [
@@ -37,7 +36,6 @@ class DetailPage extends StatelessWidget {
       body: Detail(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.pushNamed(context, "/form", arguments: detail[0]["id"]);
           Navigator.pushNamed(context, "/form", arguments: id);
         },
         child: Icon(Icons.edit),
@@ -51,13 +49,6 @@ class Detail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var id = ModalRoute.of(context)!.settings.arguments;
-    // List detail = [];
-    // var data;
-    // Future detailshow() async {
-    //   // detail = await Databaseoperation().idselect(id);
-    //   data = await LocalDatabase().retrieveData(id);
-    //   return data;
-    // }
 
     return ListView(children: <Widget>[
       FutureBuilder<Map<String, dynamic>>(
@@ -85,7 +76,6 @@ class Detail extends StatelessWidget {
                             child: SizedBox(
                               width: 250,
                               child: Text(
-                                // "${detail[0]['title']}",
                                 "${data!['title']}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 5,
@@ -102,34 +92,17 @@ class Detail extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              // "${detail[0]['date']}",
                               "${datetimeformat.format(DateTime.parse(data['date']))}",
                             ),
                           )
                         ]),
-                    // Row(
-                    //     mainAxisAlignment: MainAxisAlignment.start,
-                    //     children: <Widget>[
-                    //       Padding(
-                    //           padding: EdgeInsets.all(8.0),
-                    //           child: Text("〆切時間：")),
-                    //       Padding(
-                    //         padding: EdgeInsets.all(8.0),
-                    //         child: Text(
-                    //             // "${detail[0]['time']}",
-                    //             "${datetimeformat.format(DateTime.parse(data['date']))}"),
-                    //       )
-                    //     ]),
                     Text("画像"),
-                    // (detail[0]["image"] == "null" || detail[0]["image"] == "")
                     (data["image"] == "null" || data["image"] == "")
                         ? Text("画像はありません")
                         : ConstrainedBox(
                             constraints:
                                 BoxConstraints(maxWidth: 300, maxHeight: 300),
-                            child: Image.memory(
-                                // base64Decode(detail[0]["image"]))),
-                                base64Decode(data["image"]))),
+                            child: Image.memory(base64Decode(data["image"]))),
                   ]),
             );
           } else {

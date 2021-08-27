@@ -4,11 +4,10 @@ import 'package:todoapp/detail.dart';
 import 'package:todoapp/settings.dart';
 import 'package:todoapp/form.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:todoapp/data.dart';
 import "package:intl/intl.dart";
 
 void main() async {
-  // Notificationoperation().notification();
+  Notificationoperation().notification();
   runApp(MyApp());
 }
 
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
           "/form": (context) => FormPage2(),
           "/detail": (context) => DetailPage(),
           "/setting": (context) => SettingPage2(),
-          "/data": (context) => Data(),
         });
   }
 }
@@ -46,12 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List items = [];
   int overduelength = 0;
   final datetimeformat = DateFormat("y-M-d HH:mm");
-
-  // Future todoitem(int boolvalue) async {
-  //   items = await Databaseoperation().boolselect(boolvalue);
-  //   overduelength = await Databaseoperation().opacitynumber();
-  //   return items;
-  // }
 
   Future todoitem(int index) async {
     items = await LocalDatabase().getData(index);
@@ -117,11 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
-                                    subtitle: Text(
-                                        // "〆切日時：${items[index]['date']} ${items[index]['time']}"),
-                                        items[index]["date"] != null
-                                            ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
-                                            : ""),
+                                    subtitle: Text(items[index]["date"] != null
+                                        ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
+                                        : ""),
                                   ),
                                 ),
                                 actions: <Widget>[
@@ -130,8 +120,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     color: Colors.red,
                                     icon: Icons.delete,
                                     onTap: () async {
-                                      // Databaseoperation()
-                                      //     .delete(items[index]["id"]);
                                       await LocalDatabase()
                                           .deleteData(items[index]["id"]);
                                       setState(() {});
@@ -155,8 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     onTap: () async {
                                       await LocalDatabase()
                                           .boolchange(items[index]["id"], true);
-                                      // Databaseoperation()
-                                      //     .changebool(items[index]["id"], 1);
                                       setState(() {});
                                     },
                                   ),
@@ -189,11 +175,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                   ),
-                                  subtitle: Text(
-                                      // "〆切日時：${items[index]['date']} ${items[index]['time']}"),
-                                      items[index]["date"] != null
-                                          ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
-                                          : ""),
+                                  subtitle: Text(items[index]["date"] != null
+                                      ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
+                                      : ""),
                                 ),
                               ),
                               actions: <Widget>[
@@ -202,11 +186,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.red,
                                   icon: Icons.delete,
                                   onTap: () async {
-                                    // Databaseoperation()
-                                    //     .delete(items[index]["id"]);
                                     await LocalDatabase()
                                         .deleteData(items[index]["id"]);
-                                    // Notificationoperation().notification();
+                                    Notificationoperation().notification();
                                     setState(() {});
                                   },
                                 ),
@@ -226,11 +208,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.lime,
                                   icon: Icons.check,
                                   onTap: () async {
-                                    // Databaseoperation()
-                                    //     .changebool(items[index]["id"], 1);
                                     await LocalDatabase()
                                         .boolchange(items[index]["id"], true);
-                                    // Notificationoperation().notification();
+                                    Notificationoperation().notification();
                                     setState(() {});
                                   },
                                 ),
@@ -274,11 +254,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
-                                subtitle: Text(
-                                    // "〆切日時：${items[index]['date']} ${items[index]['time']}"),
-                                    items[index]["date"] != null
-                                        ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
-                                        : ""),
+                                subtitle: Text(items[index]["date"] != null
+                                    ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
+                                    : ""),
                               ),
                             ),
                             actions: <Widget>[
@@ -287,8 +265,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Colors.red,
                                 icon: Icons.delete,
                                 onTap: () async {
-                                  // Databaseoperation()
-                                  //     .delete(items[index]["id"]);
                                   await LocalDatabase()
                                       .deleteData(items[index]["id"]);
                                   setState(() {});
@@ -310,11 +286,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Colors.blue,
                                 icon: Icons.cancel,
                                 onTap: () async {
-                                  // Databaseoperation()
-                                  //     .changebool(items[index]["id"], 0);
                                   await LocalDatabase()
                                       .boolchange(items[index]["id"], false);
-                                  // Notificationoperation().notification();
+                                  Notificationoperation().notification();
                                   setState(() {});
                                 },
                               ),

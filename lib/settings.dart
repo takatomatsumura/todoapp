@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/operation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage2 extends StatelessWidget {
@@ -68,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
               setState(() {
                 switchvalue = value;
               });
-              // Notificationoperation().notification();
+              Notificationoperation().notification();
             },
           ),
         ]),
