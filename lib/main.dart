@@ -76,9 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
           child: FutureBuilder(
               future: todoitem(_selectedIndex),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
+              builder: (context, snapshot) {
                 if (_selectedIndex == 0) {
-                  if (snapshot.hasData && items.length != 0) {
+                  if (snapshot.hasData && items.isNotEmpty) {
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) {
@@ -109,9 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
-                                    subtitle: Text(items[index]["date"] != null
-                                        ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
-                                        : ""),
+                                    subtitle: Text(items[index]['date'] != null
+                                        ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}'''
+                                        : ''),
                                   ),
                                 ),
                                 actions: <Widget>[
@@ -141,8 +141,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     color: Colors.lime,
                                     icon: Icons.check,
                                     onTap: () async {
-                                      await LocalDatabase()
-                                          .boolchange(items[index]['id'], true);
+                                      await LocalDatabase().boolchange(
+                                          items[index]['id'],
+                                          boolvalue: true);
                                       setState(() {});
                                     },
                                   ),
@@ -176,8 +177,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     maxLines: 2,
                                   ),
                                   subtitle: Text(items[index]['date'] != null
-                                      ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(Duration(hours: 9)))}"
-                                      : ""),
+                                      ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(const Duration(hours: 9)))}'''
+                                      : ''),
                                 ),
                               ),
                               actions: <Widget>[
@@ -208,8 +209,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.lime,
                                   icon: Icons.check,
                                   onTap: () async {
-                                    await LocalDatabase()
-                                        .boolchange(items[index]['id'], true);
+                                    await LocalDatabase().boolchange(
+                                        items[index]['id'],
+                                        boolvalue: true);
                                     Notificationoperation().notification();
                                     setState(() {});
                                   },
@@ -226,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   }
                 } else {
-                  if (snapshot.hasData && items.length != 0) {
+                  if (snapshot.hasData && items.isNotEmpty) {
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) {
@@ -255,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   maxLines: 2,
                                 ),
                                 subtitle: Text(items[index]['date'] != null
-                                    ? "〆切日時：${datetimeformat.format(DateTime.parse(items[index]['date']).add(Duration(hours: 9)))}"
+                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}'''
                                     : ''),
                               ),
                             ),
@@ -286,8 +288,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Colors.blue,
                                 icon: Icons.cancel,
                                 onTap: () async {
-                                  await LocalDatabase()
-                                      .boolchange(items[index]['id'], false);
+                                  await LocalDatabase().boolchange(
+                                      items[index]['id'],
+                                      boolvalue: false);
                                   Notificationoperation().notification();
                                   setState(() {});
                                 },
@@ -315,11 +318,11 @@ class _MyHomePageState extends State<MyHomePage> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.wifi),
-              title: Text('do'),
+              label: 'do',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.done),
-              title: Text('done'),
+              label: 'done',
             )
           ],
           currentIndex: _selectedIndex,

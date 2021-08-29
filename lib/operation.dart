@@ -20,6 +20,7 @@ class LocalDatabase {
     return datalist;
   }
 
+  // ignore: type_annotate_public_apis
   Future<Map<String, dynamic>> retrieveData(var index) async {
     final responce = await dio.get(
       'http://$domain:8000/todos/retrieve/$index',
@@ -49,6 +50,7 @@ class LocalDatabase {
     data = response.data;
   }
 
+  // ignore: type_annotate_public_apis
   Future updateData(var index, String title, String date, String image) async {
     final response = await dio.patch(
       'http://$domain:8000/todos/$index',
@@ -57,7 +59,7 @@ class LocalDatabase {
     data = response.data;
   }
 
-  Future boolchange(int pk, bool boolvalue) async {
+  Future boolchange(int pk, {required bool boolvalue}) async {
     final response = await dio.patch(
       'http://$domain:8000/todos/$pk',
       data: {
@@ -80,25 +82,25 @@ class Notificationoperation {
 
   void notification() async {
     tz.initializeTimeZones();
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    bool notificationbool = preferences.getBool('notificationbool') ?? true;
+    final preferences = await SharedPreferences.getInstance();
+    var notificationbool = preferences.getBool('notificationbool') ?? true;
     if (notificationbool == true) {
       int targetlength = await LocalDatabase().listlength();
-      List notificationtarget = await LocalDatabase().getData(0);
-      int index = targetlength;
+      var notificationtarget = await LocalDatabase().getData(0);
+      var index = targetlength;
       if (notificationtarget.length != targetlength) {
         final datetimeformat = DateFormat('y-M-d HH:mm');
-        final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        final flutterLocalNotificationsPlugin =
             FlutterLocalNotificationsPlugin();
-        flutterLocalNotificationsPlugin.initialize(InitializationSettings(
+        flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
             android: AndroidInitializationSettings('app_icon'),
             iOS: IOSInitializationSettings()));
         while (index < notificationtarget.length) {
-          DateTime deadline = datetimeformat
+          var deadline = datetimeformat
               .parseStrict('''${notificationtarget[index]['date']} ${notificationtarget[index]['time']}''').add(
-                  Duration(minutes: interval));
-          DateTime now = DateTime.now();
-          int dif = deadline.difference(now).inSeconds;
+                  const Duration(minutes: interval));
+          var now = DateTime.now();
+          var dif = deadline.difference(now).inSeconds;
           if (dif <= (-interval) * 60) {
             dif = 1;
           }

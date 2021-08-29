@@ -32,12 +32,12 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   bool switchvalue = true;
 
-  setpreferences(bool value) async {
+  void setpreferences({required bool value}) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('notificationbool', value);
   }
 
-  getpreferences() async {
+  void getpreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       switchvalue = prefs.getBool('notificationbool') ?? true;
@@ -64,8 +64,8 @@ class _SettingPageState extends State<SettingPage> {
           ),
           Switch.adaptive(
             value: switchvalue,
-            onChanged: (bool value) {
-              setpreferences(value);
+            onChanged: (value) {
+              setpreferences(value: value);
               setState(() {
                 switchvalue = value;
               });
