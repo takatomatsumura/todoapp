@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-class FormPage2 extends StatelessWidget {
+class FormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,26 +28,28 @@ class FormPage2 extends StatelessWidget {
               })
         ],
       ),
-      body: _FormPage(title: 'Sample Aplication'),
+      body: _FormPageWidget(title: 'Sample Aplication'),
     );
   }
 }
 
-class _FormPage extends StatefulWidget {
-  _FormPage({Key? key, required this.title}) : super(key: key);
+class _FormPageWidget extends StatefulWidget {
+  _FormPageWidget({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _FormPageState createState() => _FormPageState();
+  _FormPageStateWidget createState() => _FormPageStateWidget();
 }
 
-class _FormPageState extends State<_FormPage> {
+class _FormPageStateWidget extends State<_FormPageWidget> {
   final _formkey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final dateController = TextEditingController();
   final timeController = TextEditingController();
   final datetimeformat = DateFormat('y-M-d HH:mm');
+  String minute = '';
+  String hour = '';
   String datestring = '';
   String timestring = '';
   var _image;
@@ -180,10 +182,18 @@ class _FormPageState extends State<_FormPage> {
                               context: context,
                               initialTime: TimeOfDay.now(),
                             );
-
                             if (selectedTime != null) {
-                              timestring =
-                                  '${selectedTime.hour}:${selectedTime.minute}';
+                              if (selectedTime.minute < 10) {
+                                minute = '0${selectedTime.minute}';
+                              } else {
+                                minute = '${selectedTime.minute}';
+                              }
+                              if (selectedTime.hour > 10) {
+                                hour = '${selectedTime.hour}';
+                              } else {
+                                hour = '0${selectedTime.hour}';
+                              }
+                              timestring = '$hour:$minute';
                             }
                             timeController.text = timestring;
                           },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todoapp/operation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingPage2 extends StatelessWidget {
+class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,21 +15,21 @@ class SettingPage2 extends StatelessWidget {
           },
         ),
       ),
-      body: SettingPage(title: 'Sample Aplication'),
+      body: SettingPageWidget(title: 'Sample Aplication'),
     );
   }
 }
 
-class SettingPage extends StatefulWidget {
-  SettingPage({Key? key, required this.title}) : super(key: key);
+class SettingPageWidget extends StatefulWidget {
+  SettingPageWidget({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _SettingPageState createState() => _SettingPageState();
+  _SettingPageStateWidget createState() => _SettingPageStateWidget();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageStateWidget extends State<SettingPageWidget> {
   bool switchvalue = true;
 
   void setpreferences({required bool value}) async {

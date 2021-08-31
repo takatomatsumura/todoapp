@@ -90,7 +90,7 @@ class Detail extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              '''${datetimeformat.format(DateTime.parse(data['date']))}''',
+                              '''${datetimeformat.format(DateTime.parse(data['date']).add(const Duration(hours: 9)))}''',
                             ),
                           )
                         ]),

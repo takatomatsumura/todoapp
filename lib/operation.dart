@@ -2,18 +2,17 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
 class DrfDatabase {
   List datalist = [];
   var data;
-  final dio = Dio();
   // final domain = '10.0.2.2:8000';
   final domain = '18.180.75.44';
 
   Future<List> getData(int index) async {
+    final dio = Dio();
     final response = await dio.get(
       'http://$domain/todos/list/$index',
     );
@@ -23,6 +22,7 @@ class DrfDatabase {
 
   // ignore: type_annotate_public_apis
   Future<Map<String, dynamic>> retrieveData(var index) async {
+    final dio = Dio();
     final responce = await dio.get(
       'http://$domain/todos/retrieve/$index',
     );
@@ -31,6 +31,7 @@ class DrfDatabase {
   }
 
   Future listlength() async {
+    final dio = Dio();
     final response = await dio.get(
       'http://$domain/todos/list/len',
     );
@@ -39,6 +40,7 @@ class DrfDatabase {
   }
 
   Future postData(String title, String date, String image) async {
+    final dio = Dio();
     final response = await dio.post(
       'http://$domain/todos/create',
       data: {
@@ -53,6 +55,7 @@ class DrfDatabase {
 
   // ignore: type_annotate_public_apis
   Future updateData(var index, String title, String date, String image) async {
+    final dio = Dio();
     final response = await dio.patch(
       'http://$domain/todos/update/$index',
       data: {'title': title, 'date': date, 'image': image},
@@ -61,6 +64,7 @@ class DrfDatabase {
   }
 
   Future boolchange(int pk, {required bool boolvalue}) async {
+    final dio = Dio();
     final response = await dio.patch(
       'http://$domain/todos/update/$pk',
       data: {
@@ -71,6 +75,7 @@ class DrfDatabase {
   }
 
   Future deleteData(int pk) async {
+    final dio = Dio();
     final responce = await dio.delete(
       'http://$domain/todos/delete/$pk',
     );
@@ -81,7 +86,7 @@ class DrfDatabase {
 class Notificationoperation {
   static const int interval = -1;
 
-  void notification() async {
+  Future<void> notification() async {
     tz.initializeTimeZones();
     final preferences = await SharedPreferences.getInstance();
     var notificationbool = preferences.getBool('notificationbool') ?? true;
@@ -90,16 +95,14 @@ class Notificationoperation {
       var notificationtarget = await DrfDatabase().getData(0);
       var index = targetlength;
       if (notificationtarget.length != targetlength) {
-        final datetimeformat = DateFormat('y-M-d HH:mm');
         final flutterLocalNotificationsPlugin =
             FlutterLocalNotificationsPlugin();
         flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
             android: AndroidInitializationSettings('app_icon'),
             iOS: IOSInitializationSettings()));
         while (index < notificationtarget.length) {
-          var deadline = datetimeformat
-              .parseStrict('''${notificationtarget[index]['date']} ${notificationtarget[index]['time']}''').add(
-                  const Duration(minutes: interval));
+          var deadline = DateTime.parse(notificationtarget[index]['date'])
+              .add(const Duration(minutes: interval));
           var now = DateTime.now();
           var dif = deadline.difference(now).inSeconds;
           if (dif <= (-interval) * 60) {
