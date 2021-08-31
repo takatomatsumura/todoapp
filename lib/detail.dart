@@ -50,7 +50,7 @@ class Detail extends StatelessWidget {
 
     return ListView(children: <Widget>[
       FutureBuilder<Map<String, dynamic>>(
-        future: LocalDatabase().retrieveData(id),
+        future: DrfDatabase().retrieveData(id),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final data = snapshot.data;

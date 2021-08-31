@@ -46,8 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final datetimeformat = DateFormat('y-M-d HH:mm');
 
   Future todoitem(int index) async {
-    items = await LocalDatabase().getData(index);
-    overduelength = await LocalDatabase().listlength();
+    items = await DrfDatabase().getData(index);
+    overduelength = await DrfDatabase().listlength();
     return items;
   }
 
@@ -85,10 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (index < overduelength) {
                           return Opacity(
                             opacity: 0.5,
-                            child: RaisedButton(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 1.0, horizontal: 0),
-                              elevation: 3.0,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                              ),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/detail',
                                     arguments: items[index]['id']);
@@ -119,10 +119,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                     caption: 'delete',
                                     color: Colors.red,
                                     icon: Icons.delete,
-                                    onTap: () async {
-                                      await LocalDatabase()
-                                          .deleteData(items[index]['id']);
-                                      setState(() {});
+                                    onTap: () {
+                                      setState(() {
+                                        DrfDatabase()
+                                            .deleteData(items[index]['id']);
+                                      });
                                     },
                                   ),
                                   IconSlideAction(
@@ -140,11 +141,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     caption: 'done',
                                     color: Colors.lime,
                                     icon: Icons.check,
-                                    onTap: () async {
-                                      await LocalDatabase().boolchange(
-                                          items[index]['id'],
-                                          boolvalue: true);
-                                      setState(() {});
+                                    onTap: () {
+                                      setState(() {
+                                        DrfDatabase().boolchange(
+                                            items[index]['id'],
+                                            boolvalue: true);
+                                      });
                                     },
                                   ),
                                 ],
@@ -152,10 +154,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           );
                         } else {
-                          return RaisedButton(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 1.0, horizontal: 0),
-                            elevation: 3.0,
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(0),
+                            ),
                             onPressed: () {
                               Navigator.pushNamed(context, '/detail',
                                   arguments: items[index]['id']);
@@ -186,11 +188,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   caption: 'delete',
                                   color: Colors.red,
                                   icon: Icons.delete,
-                                  onTap: () async {
-                                    await LocalDatabase()
-                                        .deleteData(items[index]['id']);
-                                    Notificationoperation().notification();
-                                    setState(() {});
+                                  onTap: () {
+                                    setState(() {
+                                      DrfDatabase()
+                                          .deleteData(items[index]['id']);
+                                      Notificationoperation().notification();
+                                    });
                                   },
                                 ),
                                 IconSlideAction(
@@ -208,12 +211,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   caption: 'done',
                                   color: Colors.lime,
                                   icon: Icons.check,
-                                  onTap: () async {
-                                    await LocalDatabase().boolchange(
-                                        items[index]['id'],
-                                        boolvalue: true);
-                                    Notificationoperation().notification();
-                                    setState(() {});
+                                  onTap: () {
+                                    setState(() {
+                                      DrfDatabase().boolchange(
+                                          items[index]['id'],
+                                          boolvalue: true);
+                                      Notificationoperation().notification();
+                                    });
                                   },
                                 ),
                               ],
@@ -232,10 +236,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) {
-                        return RaisedButton(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 1.0, horizontal: 0),
-                          elevation: 3.0,
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(0),
+                          ),
                           onPressed: () {
                             Navigator.pushNamed(context, '/detail',
                                 arguments: items[index]['id']);
@@ -266,10 +270,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 caption: 'delete',
                                 color: Colors.red,
                                 icon: Icons.delete,
-                                onTap: () async {
-                                  await LocalDatabase()
-                                      .deleteData(items[index]['id']);
-                                  setState(() {});
+                                onTap: () {
+                                  setState(() {
+                                    DrfDatabase()
+                                        .deleteData(items[index]['id']);
+                                  });
                                 },
                               ),
                               IconSlideAction(
@@ -284,15 +289,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             ],
                             secondaryActions: <Widget>[
                               IconSlideAction(
-                                caption: 'canceal',
+                                caption: 'cancel',
                                 color: Colors.blue,
                                 icon: Icons.cancel,
-                                onTap: () async {
-                                  await LocalDatabase().boolchange(
-                                      items[index]['id'],
-                                      boolvalue: false);
-                                  Notificationoperation().notification();
-                                  setState(() {});
+                                onTap: () {
+                                  setState(() {
+                                    DrfDatabase().boolchange(items[index]['id'],
+                                        boolvalue: false);
+                                    Notificationoperation().notification();
+                                  });
                                 },
                               ),
                             ],

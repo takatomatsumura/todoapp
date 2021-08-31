@@ -236,7 +236,7 @@ class _FormPageState extends State<_FormPage> {
                       if (_formkey.currentState!.validate()) {
                         if (id == '') {
                           Notificationoperation().notification();
-                          LocalDatabase().postData(titleController.text,
+                          DrfDatabase().postData(titleController.text,
                               datestring + timestring, img64);
                           Navigator.pushNamedAndRemoveUntil(
                             context,
@@ -245,7 +245,7 @@ class _FormPageState extends State<_FormPage> {
                           );
                         } else {
                           Notificationoperation().notification();
-                          LocalDatabase().updateData(
+                          DrfDatabase().updateData(
                             id,
                             titleController.text,
                             datestring + timestring,

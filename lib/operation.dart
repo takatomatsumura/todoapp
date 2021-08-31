@@ -6,15 +6,16 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
-class LocalDatabase {
+class DrfDatabase {
   List datalist = [];
   var data;
   final dio = Dio();
-  final domain = '10.0.2.2';
+  // final domain = '10.0.2.2:8000';
+  final domain = '18.180.75.44';
 
   Future<List> getData(int index) async {
     final response = await dio.get(
-      'http://$domain:8000/todos/list/$index',
+      'http://$domain/todos/list/$index',
     );
     datalist = response.data;
     return datalist;
@@ -23,7 +24,7 @@ class LocalDatabase {
   // ignore: type_annotate_public_apis
   Future<Map<String, dynamic>> retrieveData(var index) async {
     final responce = await dio.get(
-      'http://$domain:8000/todos/retrieve/$index',
+      'http://$domain/todos/retrieve/$index',
     );
     data = responce.data as Map<String, dynamic>;
     return data;
@@ -31,7 +32,7 @@ class LocalDatabase {
 
   Future listlength() async {
     final response = await dio.get(
-      'http://$domain:8000/todos/list/len',
+      'http://$domain/todos/list/len',
     );
     data = response.data['listlen'];
     return data;
@@ -39,7 +40,7 @@ class LocalDatabase {
 
   Future postData(String title, String date, String image) async {
     final response = await dio.post(
-      'http://$domain:8000/todos/',
+      'http://$domain/todos/create',
       data: {
         'title': title,
         'date': date,
@@ -53,7 +54,7 @@ class LocalDatabase {
   // ignore: type_annotate_public_apis
   Future updateData(var index, String title, String date, String image) async {
     final response = await dio.patch(
-      'http://$domain:8000/todos/$index',
+      'http://$domain/todos/update/$index',
       data: {'title': title, 'date': date, 'image': image},
     );
     data = response.data;
@@ -61,7 +62,7 @@ class LocalDatabase {
 
   Future boolchange(int pk, {required bool boolvalue}) async {
     final response = await dio.patch(
-      'http://$domain:8000/todos/$pk',
+      'http://$domain/todos/update/$pk',
       data: {
         'donebool': boolvalue,
       },
@@ -71,7 +72,7 @@ class LocalDatabase {
 
   Future deleteData(int pk) async {
     final responce = await dio.delete(
-      'http://$domain:8000/todos/$pk',
+      'http://$domain/todos/delete/$pk',
     );
     data = responce.data;
   }
@@ -85,8 +86,8 @@ class Notificationoperation {
     final preferences = await SharedPreferences.getInstance();
     var notificationbool = preferences.getBool('notificationbool') ?? true;
     if (notificationbool == true) {
-      int targetlength = await LocalDatabase().listlength();
-      var notificationtarget = await LocalDatabase().getData(0);
+      int targetlength = await DrfDatabase().listlength();
+      var notificationtarget = await DrfDatabase().getData(0);
       var index = targetlength;
       if (notificationtarget.length != targetlength) {
         final datetimeformat = DateFormat('y-M-d HH:mm');
