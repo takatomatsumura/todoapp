@@ -1,24 +1,36 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+import 'package:todoapp/main.dart';
 
 class DrfDatabase {
   final dio = Dio();
   List datalist = [];
   var data;
   final domain2 = '10.0.2.2:8000';
-  final domain = '18.180.75.44';
+  // final domain = '18.180.75.44';
 
-  Future<List> getData(int index) async {
+  Future sampleData(int _index, String uuid) async {
     final dio = Dio();
     final response = await dio.get(
-      'http://$domain2/todos/list/$index',
+      'http://$domain2/todos/sample/$_index/$uuid',
     );
-    datalist = response.data;
-    return datalist;
+    var _jsonlist = response.data['todo'];
+    var _datalist = jsonDecode(_jsonlist);
+    return _datalist;
+  }
+
+  Future sampleData3(String uuid) async {
+    final dio = Dio();
+    final response = await dio.get(
+      'http://$domain2/todos/sample/len/$uuid',
+    );
+    var _jsonlist = response.data['listlen'];
+    return _jsonlist;
   }
 
   // ignore: type_annotate_public_apis
@@ -28,15 +40,6 @@ class DrfDatabase {
       'http://$domain2/todos/retrieve/$index',
     );
     data = responce.data as Map<String, dynamic>;
-    return data;
-  }
-
-  Future listlength() async {
-    final dio = Dio();
-    final response = await dio.get(
-      'http://$domain2/todos/list/len',
-    );
-    data = response.data['listlen'];
     return data;
   }
 
@@ -114,14 +117,14 @@ class DrfDatabase {
 
 class Notificationoperation {
   static const int interval = -1;
-
   Future<void> notification() async {
     tz.initializeTimeZones();
     final preferences = await SharedPreferences.getInstance();
     var notificationbool = preferences.getBool('notificationbool') ?? true;
     if (notificationbool == true) {
-      int targetlength = await DrfDatabase().listlength();
-      var notificationtarget = await DrfDatabase().getData(0);
+      var uuid = await Getuuid().getuuid();
+      int targetlength = await DrfDatabase().sampleData3(uuid);
+      var notificationtarget = await DrfDatabase().sampleData(0, uuid);
       var index = targetlength;
       if (notificationtarget.length != targetlength) {
         final flutterLocalNotificationsPlugin =
@@ -130,8 +133,9 @@ class Notificationoperation {
             android: AndroidInitializationSettings('icon'),
             iOS: IOSInitializationSettings()));
         while (index < notificationtarget.length) {
-          var deadline = DateTime.parse(notificationtarget[index]['date'])
-              .add(const Duration(minutes: interval));
+          var deadline =
+              DateTime.parse(notificationtarget[index]['fields']['date'])
+                  .add(const Duration(minutes: interval));
           var now = DateTime.now();
           var dif = deadline.difference(now).inSeconds;
           if (dif <= (-interval) * 60) {
@@ -141,7 +145,7 @@ class Notificationoperation {
           await flutterLocalNotificationsPlugin.zonedSchedule(
             index,
             '〆切が迫っています。',
-            "${notificationtarget[index]['title']}",
+            "${notificationtarget[index]['fields']['title']}",
             tz.TZDateTime.from(DateTime.now(), tz.local)
                 .add(Duration(seconds: dif)),
             const NotificationDetails(

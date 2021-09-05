@@ -2,6 +2,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp/operation.dart';
+import 'package:todoapp/main.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -15,11 +16,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List items = [];
   int overduelength = 0;
+  String uuid = '';
   final datetimeformat = DateFormat('y-M-d HH:mm');
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      uuid = await Getuuid().getuuid();
+      setState(() {});
+    });
+  }
 
   Future todoitem(int index) async {
-    items = await DrfDatabase().getData(index);
-    overduelength = await DrfDatabase().listlength();
+    items = await DrfDatabase().sampleData(index, uuid);
+    overduelength = await DrfDatabase().sampleData3(uuid);
     return items;
   }
 
@@ -63,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/detail',
-                                    arguments: items[index]['id']);
+                                    arguments: items[index]['pk']);
                               },
                               child: Slidable(
                                 actionPane: const SlidableDrawerActionPane(),
@@ -77,12 +87,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                       foregroundColor: Colors.white,
                                     ),
                                     title: Text(
-                                      "タイトル：${items[index]['title']}",
+                                      "タイトル：${items[index]['fields']['title']}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
-                                    subtitle: Text(items[index]['date'] != null
-                                        ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}'''
+                                    subtitle: Text(items[index]['fields']
+                                                ['date'] !=
+                                            null
+                                        ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
                                         : ''),
                                   ),
                                 ),
@@ -93,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.delete,
                                     onTap: () async {
                                       await DrfDatabase()
-                                          .deleteData(items[index]['id']);
+                                          .deleteData(items[index]['pk']);
                                       setState(() {});
                                     },
                                   ),
@@ -103,7 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.edit,
                                     onTap: () {
                                       Navigator.pushNamed(context, '/form',
-                                          arguments: items[index]['id']);
+                                          arguments: items[index]['fields']
+                                              ['id']);
                                     },
                                   ),
                                 ],
@@ -114,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.check,
                                     onTap: () async {
                                       await DrfDatabase().boolchange(
-                                          items[index]['id'],
+                                          items[index]['pk'],
                                           boolvalue: true);
                                       setState(() {});
                                     },
@@ -130,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             onPressed: () {
                               Navigator.pushNamed(context, '/detail',
-                                  arguments: items[index]['id']);
+                                  arguments: items[index]['pk']);
                             },
                             child: Slidable(
                               actionPane: const SlidableDrawerActionPane(),
@@ -144,12 +157,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                     foregroundColor: Colors.white,
                                   ),
                                   title: Text(
-                                    "タイトル：${items[index]['title']}",
+                                    "タイトル：${items[index]['fields']['title']}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                   ),
-                                  subtitle: Text(items[index]['date'] != null
-                                      ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]["date"]).add(const Duration(hours: 9)))}'''
+                                  subtitle: Text(items[index]['fields']
+                                              ['date'] !=
+                                          null
+                                      ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']["date"]).add(const Duration(hours: 9)))}'''
                                       : ''),
                                 ),
                               ),
@@ -160,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   icon: Icons.delete,
                                   onTap: () async {
                                     await DrfDatabase()
-                                        .deleteData(items[index]['id']);
+                                        .deleteData(items[index]['pk']);
                                     await Notificationoperation()
                                         .notification();
                                     setState(() {});
@@ -172,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   icon: Icons.edit,
                                   onTap: () {
                                     Navigator.pushNamed(context, '/form',
-                                        arguments: items[index]['id']);
+                                        arguments: items[index]['pk']);
                                   },
                                 ),
                               ],
@@ -183,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   icon: Icons.check,
                                   onTap: () async {
                                     await DrfDatabase().boolchange(
-                                        items[index]['id'],
+                                        items[index]['pk'],
                                         boolvalue: true);
                                     await Notificationoperation()
                                         .notification();
@@ -212,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           onPressed: () {
                             Navigator.pushNamed(context, '/detail',
-                                arguments: items[index]['id']);
+                                arguments: items[index]['pk']);
                           },
                           child: Slidable(
                             actionPane: const SlidableDrawerActionPane(),
@@ -226,12 +241,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   foregroundColor: Colors.white,
                                 ),
                                 title: Text(
-                                  "タイトル：${items[index]['title']}",
+                                  "タイトル：${items[index]['fields']['title']}",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
-                                subtitle: Text(items[index]['date'] != null
-                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}'''
+                                subtitle: Text(items[index]['fields']['date'] !=
+                                        null
+                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
                                     : ''),
                               ),
                             ),
@@ -242,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 icon: Icons.delete,
                                 onTap: () async {
                                   await DrfDatabase()
-                                      .deleteData(items[index]['id']);
+                                      .deleteData(items[index]['pk']);
                                   setState(() {});
                                 },
                               ),
@@ -252,7 +268,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 icon: Icons.edit,
                                 onTap: () {
                                   Navigator.pushNamed(context, '/form',
-                                      arguments: items[index]['id']);
+                                      arguments: items[index]['pk']);
                                 },
                               ),
                             ],
@@ -263,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 icon: Icons.cancel,
                                 onTap: () async {
                                   await DrfDatabase().boolchange(
-                                      items[index]['id'],
+                                      items[index]['pk'],
                                       boolvalue: false);
                                   await Notificationoperation().notification();
                                   setState(() {});

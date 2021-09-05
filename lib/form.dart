@@ -104,8 +104,9 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
             DateTime.parse(detail['date']).add(const Duration(hours: 9)));
         timeController.text = timeformat.format(
             DateTime.parse(detail['date']).add(const Duration(hours: 9)));
-        img64 = detail['image'];
+        img64 = await detail['image'];
         detailimage = await detail['image'];
+        setState(() {});
       });
     }
   }
@@ -214,7 +215,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                               } else {
                                 minute = '${selectedTime.minute}';
                               }
-                              if (selectedTime.hour > 10) {
+                              if (selectedTime.hour > 9) {
                                 hour = '${selectedTime.hour}';
                               } else {
                                 hour = '0${selectedTime.hour}';
