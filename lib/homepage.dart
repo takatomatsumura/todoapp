@@ -161,7 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   onTap: () async {
                                     await DrfDatabase()
                                         .deleteData(items[index]['id']);
-                                    Notificationoperation().notification();
+                                    await Notificationoperation()
+                                        .notification();
                                     setState(() {});
                                   },
                                 ),
@@ -184,7 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     await DrfDatabase().boolchange(
                                         items[index]['id'],
                                         boolvalue: true);
-                                    Notificationoperation().notification();
+                                    await Notificationoperation()
+                                        .notification();
                                     setState(() {});
                                   },
                                 ),
@@ -263,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   await DrfDatabase().boolchange(
                                       items[index]['id'],
                                       boolvalue: false);
-                                  Notificationoperation().notification();
+                                  await Notificationoperation().notification();
                                   setState(() {});
                                 },
                               ),

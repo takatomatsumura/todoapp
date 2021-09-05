@@ -64,12 +64,12 @@ class _SettingPageStateWidget extends State<SettingPageWidget> {
           ),
           Switch.adaptive(
             value: switchvalue,
-            onChanged: (value) {
+            onChanged: (value) async {
               setpreferences(value: value);
               setState(() {
                 switchvalue = value;
               });
-              Notificationoperation().notification();
+              await Notificationoperation().notification();
             },
           ),
         ]),

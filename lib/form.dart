@@ -2,13 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:todoapp/operation.dart';
+import 'package:todoapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+var id;
+
 class FormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    id = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo'),
@@ -56,6 +60,12 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   final picker = ImagePicker();
   var uintlist;
   String img64 = '';
+  String uuid = '';
+  String detailimage = '';
+  var todouser;
+  var detail;
+  final dateformat = DateFormat('y-M-d');
+  final timeformat = DateFormat('HH:mm');
 
   Future _getImagecamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
@@ -84,9 +94,24 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var id = ModalRoute.of(context)!.settings.arguments;
+  void initState() {
+    super.initState();
+    if (id != '') {
+      Future(() async {
+        detail = await DrfDatabase().retrieveData(id);
+        titleController.text = detail['title'];
+        dateController.text = dateformat.format(
+            DateTime.parse(detail['date']).add(const Duration(hours: 9)));
+        timeController.text = timeformat.format(
+            DateTime.parse(detail['date']).add(const Duration(hours: 9)));
+        img64 = detail['image'];
+        detailimage = await detail['image'];
+      });
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ListView(children: <Widget>[
@@ -146,9 +171,10 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
 
                             if (selectedDate != null) {
                               datestring =
-                                  '''${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ''';
+                                  '''${dateformat.format(selectedDate)}''';
                             }
-                            dateController.text = datestring;
+                            dateController.text =
+                                dateformat.format(selectedDate!);
                           },
                           child: Container(),
                         ),
@@ -203,9 +229,17 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                     ]),
                   ),
                   _image == null
-                      ? const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('画像が選択されていません。'),
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: detailimage == ''
+                              ? const Text('画像が選択されていません。')
+                              : ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 300, maxWidth: 300),
+                                  child: Image.memory(
+                                    base64Decode(detailimage),
+                                  ),
+                                ),
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -242,24 +276,31 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                       ]),
                   RaisedButton(
                     child: const Text('保存'),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formkey.currentState!.validate()) {
+                        uuid = await Getuuid().getuuid();
+                        todouser = await DrfDatabase().userretrieve(uuid);
                         if (id == '') {
-                          Notificationoperation().notification();
-                          DrfDatabase().postData(titleController.text,
-                              datestring + timestring, img64);
+                          await Notificationoperation().notification();
+                          await DrfDatabase().postData(
+                            titleController.text,
+                            '$datestring $timestring',
+                            img64,
+                            todouser['id'],
+                          );
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/home',
                             (_) => false,
                           );
                         } else {
-                          Notificationoperation().notification();
-                          DrfDatabase().updateData(
+                          await Notificationoperation().notification();
+                          await DrfDatabase().updateData(
                             id,
                             titleController.text,
-                            datestring + timestring,
+                            '${dateController.text} ${timeController.text}',
                             img64,
+                            todouser['id'],
                           );
                           Navigator.pushNamed(context, '/detail',
                               arguments: id);

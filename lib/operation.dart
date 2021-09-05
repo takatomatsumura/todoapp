@@ -6,15 +6,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
 class DrfDatabase {
+  final dio = Dio();
   List datalist = [];
   var data;
-  // final domain = '10.0.2.2:8000';
+  final domain2 = '10.0.2.2:8000';
   final domain = '18.180.75.44';
 
   Future<List> getData(int index) async {
     final dio = Dio();
     final response = await dio.get(
-      'http://$domain/todos/list/$index',
+      'http://$domain2/todos/list/$index',
     );
     datalist = response.data;
     return datalist;
@@ -24,7 +25,7 @@ class DrfDatabase {
   Future<Map<String, dynamic>> retrieveData(var index) async {
     final dio = Dio();
     final responce = await dio.get(
-      'http://$domain/todos/retrieve/$index',
+      'http://$domain2/todos/retrieve/$index',
     );
     data = responce.data as Map<String, dynamic>;
     return data;
@@ -33,32 +34,39 @@ class DrfDatabase {
   Future listlength() async {
     final dio = Dio();
     final response = await dio.get(
-      'http://$domain/todos/list/len',
+      'http://$domain2/todos/list/len',
     );
     data = response.data['listlen'];
     return data;
   }
 
-  Future postData(String title, String date, String image) async {
+  Future postData(String title, String date, String image, int owner) async {
     final dio = Dio();
     final response = await dio.post(
-      'http://$domain/todos/create',
+      'http://$domain2/todos/create',
       data: {
         'title': title,
         'date': date,
         'donebool': false,
         'image': image,
+        'owner': owner,
       },
     );
     data = response.data;
   }
 
   // ignore: type_annotate_public_apis
-  Future updateData(var index, String title, String date, String image) async {
+  Future updateData(
+      var index, String title, String date, String image, int owner) async {
     final dio = Dio();
     final response = await dio.patch(
-      'http://$domain/todos/update/$index',
-      data: {'title': title, 'date': date, 'image': image},
+      'http://$domain2/todos/update/$index',
+      data: {
+        'title': title,
+        'date': date,
+        'image': image,
+        'owner': owner,
+      },
     );
     data = response.data;
   }
@@ -66,7 +74,7 @@ class DrfDatabase {
   Future boolchange(int pk, {required bool boolvalue}) async {
     final dio = Dio();
     final response = await dio.patch(
-      'http://$domain/todos/update/$pk',
+      'http://$domain2/todos/update/$pk',
       data: {
         'donebool': boolvalue,
       },
@@ -77,9 +85,30 @@ class DrfDatabase {
   Future deleteData(int pk) async {
     final dio = Dio();
     final responce = await dio.delete(
-      'http://$domain/todos/delete/$pk',
+      'http://$domain2/todos/delete/$pk',
     );
     data = responce.data;
+  }
+
+  Future userretrieve(String uuid) async {
+    final dio = Dio();
+    final responce = await dio.get(
+      'http://$domain2/todos/user/retrieve/$uuid',
+    );
+    return responce.data['todouser'];
+  }
+
+  Future usercreate(String uuid) async {
+    final responce = await dio.post(
+      'http://$domain2/todos/user/create',
+      data: {
+        'uuid': uuid,
+        'name': 'name1',
+      },
+    );
+    data = responce.data;
+    print(data);
+    return data;
   }
 }
 
@@ -98,7 +127,7 @@ class Notificationoperation {
         final flutterLocalNotificationsPlugin =
             FlutterLocalNotificationsPlugin();
         flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-            android: AndroidInitializationSettings('app_icon'),
+            android: AndroidInitializationSettings('icon'),
             iOS: IOSInitializationSettings()));
         while (index < notificationtarget.length) {
           var deadline = DateTime.parse(notificationtarget[index]['date'])
