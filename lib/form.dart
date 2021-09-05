@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-var id;
+var _id;
 
 class FormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    id = ModalRoute.of(context)!.settings.arguments;
+    _id = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo'),
@@ -58,20 +58,20 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   String timestring = '';
   var _image;
   final picker = ImagePicker();
-  var uintlist;
+  var _uintlist;
   String img64 = '';
   String uuid = '';
   String detailimage = '';
-  var todouser;
-  var detail;
+  var _todouser;
+  var _detail;
   final dateformat = DateFormat('y-M-d');
   final timeformat = DateFormat('HH:mm');
 
   Future _getImagecamera() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
-      uintlist = File(pickedFile.path).readAsBytesSync();
-      img64 = base64Encode(uintlist);
+      _uintlist = File(pickedFile.path).readAsBytesSync();
+      img64 = base64Encode(_uintlist);
     }
     setState(() {
       if (pickedFile != null) {
@@ -81,10 +81,10 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   }
 
   Future _getImagegallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      uintlist = File(pickedFile.path).readAsBytesSync();
-      img64 = base64Encode(uintlist);
+      _uintlist = File(pickedFile.path).readAsBytesSync();
+      img64 = base64Encode(_uintlist);
     }
     setState(() {
       if (pickedFile != null) {
@@ -96,16 +96,16 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   @override
   void initState() {
     super.initState();
-    if (id != '') {
+    if (_id != '') {
       Future(() async {
-        detail = await DrfDatabase().retrieveData(id);
-        titleController.text = detail['title'];
+        _detail = await DrfDatabase().retrieveData(_id);
+        titleController.text = _detail['title'];
         dateController.text = dateformat.format(
-            DateTime.parse(detail['date']).add(const Duration(hours: 9)));
+            DateTime.parse(_detail['date']).add(const Duration(hours: 9)));
         timeController.text = timeformat.format(
-            DateTime.parse(detail['date']).add(const Duration(hours: 9)));
-        img64 = await detail['image'];
-        detailimage = await detail['image'];
+            DateTime.parse(_detail['date']).add(const Duration(hours: 9)));
+        img64 = await _detail['image'];
+        detailimage = await _detail['image'];
         setState(() {});
       });
     }
@@ -131,10 +131,10 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                         labelText: 'タイトル',
                         filled: true,
                       ),
-                      validator: (titlevalue) {
-                        if (titlevalue == null || titlevalue.isEmpty) {
+                      validator: (_titlevalue) {
+                        if (_titlevalue == null || _titlevalue.isEmpty) {
                           return '必須項目です';
-                        } else if (200 <= titlevalue.length) {
+                        } else if (200 <= _titlevalue.length) {
                           return '200文字までしか入力できません。';
                         }
                       },
@@ -152,8 +152,8 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                           labelText: '〆切日時',
                           filled: true,
                         ),
-                        validator: (datevalue) {
-                          if (datevalue == null || datevalue.isEmpty) {
+                        validator: (_datevalue) {
+                          if (_datevalue == null || _datevalue.isEmpty) {
                             return '必須項目です';
                           }
                         },
@@ -161,21 +161,21 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                       SizedBox(
                         width: double.infinity,
                         height: 62,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () async {
-                            final selectedDate = await showDatePicker(
+                            final _selectedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(DateTime.now().year),
                               lastDate: DateTime(DateTime.now().year + 1),
                             );
 
-                            if (selectedDate != null) {
+                            if (_selectedDate != null) {
                               datestring =
-                                  '''${dateformat.format(selectedDate)}''';
+                                  '''${dateformat.format(_selectedDate)}''';
                             }
                             dateController.text =
-                                dateformat.format(selectedDate!);
+                                dateformat.format(_selectedDate!);
                           },
                           child: Container(),
                         ),
@@ -193,8 +193,8 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                             hintText: '〆切時間',
                             labelText: '〆切時間',
                             filled: true),
-                        validator: (timevalue) {
-                          if (timevalue == null || timevalue.isEmpty) {
+                        validator: (_timevalue) {
+                          if (_timevalue == null || _timevalue.isEmpty) {
                             return '必須項目です';
                           }
                           return null;
@@ -203,22 +203,22 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                       SizedBox(
                         width: double.infinity,
                         height: 62,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () async {
-                            final selectedTime = await showTimePicker(
+                            final _selectedTime = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
                             );
-                            if (selectedTime != null) {
-                              if (selectedTime.minute < 10) {
-                                minute = '0${selectedTime.minute}';
+                            if (_selectedTime != null) {
+                              if (_selectedTime.minute < 10) {
+                                minute = '0${_selectedTime.minute}';
                               } else {
-                                minute = '${selectedTime.minute}';
+                                minute = '${_selectedTime.minute}';
                               }
-                              if (selectedTime.hour > 9) {
-                                hour = '${selectedTime.hour}';
+                              if (_selectedTime.hour > 9) {
+                                hour = '${_selectedTime.hour}';
                               } else {
-                                hour = '0${selectedTime.hour}';
+                                hour = '0${_selectedTime.hour}';
                               }
                               timestring = '$hour:$minute';
                             }
@@ -259,9 +259,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                             onPrimary: Colors.white,
                             shape: const CircleBorder(),
                           ),
-                          onPressed: () {
-                            _getImagecamera();
-                          },
+                          onPressed: _getImagecamera,
                         ),
                         ElevatedButton(
                           child: const Icon(Icons.photo),
@@ -270,24 +268,22 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                             onPrimary: Colors.white,
                             shape: const CircleBorder(),
                           ),
-                          onPressed: () {
-                            _getImagegallery();
-                          },
+                          onPressed: _getImagegallery,
                         ),
                       ]),
-                  RaisedButton(
+                  ElevatedButton(
                     child: const Text('保存'),
                     onPressed: () async {
                       if (_formkey.currentState!.validate()) {
                         uuid = await Getuuid().getuuid();
-                        todouser = await DrfDatabase().userretrieve(uuid);
-                        if (id == '') {
+                        _todouser = await DrfDatabase().userretrieve(uuid);
+                        if (_id == '') {
                           await Notificationoperation().notification();
                           await DrfDatabase().postData(
                             titleController.text,
                             '$datestring $timestring',
                             img64,
-                            todouser['id'],
+                            _todouser['id'],
                           );
                           Navigator.pushNamedAndRemoveUntil(
                             context,
@@ -297,16 +293,17 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                         } else {
                           await Notificationoperation().notification();
                           await DrfDatabase().updateData(
-                            id,
+                            _id,
                             titleController.text,
                             '${dateController.text} ${timeController.text}',
                             img64,
-                            todouser['id'],
+                            _todouser['id'],
                           );
                           Navigator.pushNamed(context, '/detail',
-                              arguments: id);
+                              arguments: _id);
                         }
-                        Scaffold.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           content: Text('Processing Data'),
                         ));
                       }

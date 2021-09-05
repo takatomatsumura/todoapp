@@ -115,8 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.edit,
                                     onTap: () {
                                       Navigator.pushNamed(context, '/form',
-                                          arguments: items[index]['fields']
-                                              ['id']);
+                                          arguments: items[index]['pk']);
                                     },
                                   ),
                                 ],

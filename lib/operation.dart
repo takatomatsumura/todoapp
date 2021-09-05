@@ -10,108 +10,117 @@ import 'package:todoapp/main.dart';
 class DrfDatabase {
   final dio = Dio();
   List datalist = [];
-  var data;
+  var _data;
   final domain2 = '10.0.2.2:8000';
   // final domain = '18.180.75.44';
 
-  Future sampleData(int _index, String uuid) async {
-    final dio = Dio();
+  Future sampleData(int _index, String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/sample/$_index/$uuid',
+      'http://$domain2/todos/list/$_index/$_uuid',
     );
     var _jsonlist = response.data['todo'];
     var _datalist = jsonDecode(_jsonlist);
     return _datalist;
   }
 
-  Future sampleData3(String uuid) async {
-    final dio = Dio();
+  Future sampleData3(String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/sample/len/$uuid',
+      'http://$domain2/todos/list/overdue/$_uuid',
     );
     var _jsonlist = response.data['listlen'];
     return _jsonlist;
   }
 
   // ignore: type_annotate_public_apis
-  Future<Map<String, dynamic>> retrieveData(var index) async {
-    final dio = Dio();
+  Future<Map<String, dynamic>> retrieveData(var _index) async {
     final responce = await dio.get(
-      'http://$domain2/todos/retrieve/$index',
+      'http://$domain2/todos/retrieve/$_index',
     );
-    data = responce.data as Map<String, dynamic>;
-    return data;
+    _data = responce.data as Map<String, dynamic>;
+    return _data;
   }
 
-  Future postData(String title, String date, String image, int owner) async {
-    final dio = Dio();
+  Future postData(
+      String _title, String _date, String _image, int _owner) async {
     final response = await dio.post(
       'http://$domain2/todos/create',
       data: {
-        'title': title,
-        'date': date,
+        'title': _title,
+        'date': _date,
         'donebool': false,
-        'image': image,
-        'owner': owner,
+        'image': _image,
+        'owner': _owner,
       },
     );
-    data = response.data;
+    _data = response.data;
   }
 
-  // ignore: type_annotate_public_apis
-  Future updateData(
-      var index, String title, String date, String image, int owner) async {
+  Future updateData(int _index, String _title, String _date, String _image,
+      int _owner) async {
     final dio = Dio();
     final response = await dio.patch(
-      'http://$domain2/todos/update/$index',
+      'http://$domain2/todos/update/$_index',
       data: {
-        'title': title,
-        'date': date,
-        'image': image,
-        'owner': owner,
+        'title': _title,
+        'date': _date,
+        'image': _image,
+        'owner': _owner,
       },
     );
-    data = response.data;
+    _data = response.data;
   }
 
-  Future boolchange(int pk, {required bool boolvalue}) async {
-    final dio = Dio();
+  Future boolchange(int _pk, {required bool boolvalue}) async {
     final response = await dio.patch(
-      'http://$domain2/todos/update/$pk',
+      'http://$domain2/todos/update/$_pk',
       data: {
         'donebool': boolvalue,
       },
     );
-    data = response.data;
+    _data = response.data;
   }
 
-  Future deleteData(int pk) async {
-    final dio = Dio();
+  Future deleteData(int _pk) async {
     final responce = await dio.delete(
-      'http://$domain2/todos/delete/$pk',
+      'http://$domain2/todos/delete/$_pk',
     );
-    data = responce.data;
+    _data = responce.data;
   }
 
-  Future userretrieve(String uuid) async {
-    final dio = Dio();
+  Future userretrieve(String _uuid) async {
     final responce = await dio.get(
-      'http://$domain2/todos/user/retrieve/$uuid',
+      'http://$domain2/todos/user/retrieve/$_uuid',
     );
     return responce.data['todouser'];
   }
 
-  Future usercreate(String uuid) async {
+  Future usercreate(String _uuid) async {
     final responce = await dio.post(
       'http://$domain2/todos/user/create',
       data: {
-        'uuid': uuid,
-        'name': 'name1',
+        'uuid': _uuid,
+        'name': 'name',
       },
     );
-    data = responce.data;
-    print(data);
-    return data;
+    _data = responce.data;
+  }
+
+  Future userupdate(String _username, int _pk) async {
+    final response = await dio.patch(
+      'http://$domain2/todos/user/update/$_pk',
+      data: {
+        'name': _username,
+      },
+    );
+    _data = response.data;
+  }
+
+  Future userlist() async {
+    final responce = await dio.get(
+      'http://$domain2/todos/user/list',
+    );
+    _data = responce.data;
+    return _data;
   }
 }
 

@@ -53,27 +53,40 @@ class _SettingPageStateWidget extends State<SettingPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child:
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          const Text(
-            '通知',
-            style: TextStyle(
-              fontSize: 20,
-            ),
-          ),
-          Switch.adaptive(
-            value: switchvalue,
-            onChanged: (value) async {
-              setpreferences(value: value);
-              setState(() {
-                switchvalue = value;
-              });
-              await Notificationoperation().notification();
-            },
-          ),
-        ]),
-      ),
+              const Icon(Icons.notifications),
+              const Text(
+                '通知',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              Switch.adaptive(
+                value: switchvalue,
+                onChanged: (value) async {
+                  setpreferences(value: value);
+                  setState(() {
+                    switchvalue = value;
+                  });
+                  await Notificationoperation().notification();
+                },
+              ),
+            ]),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/user');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Icon(Icons.person),
+                    const Text('ユーザー設定'),
+                  ],
+                ))
+          ]),
     );
   }
 }

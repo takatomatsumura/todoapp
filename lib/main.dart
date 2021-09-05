@@ -5,36 +5,44 @@ import 'package:todoapp/detail.dart';
 import 'package:todoapp/settings.dart';
 import 'package:todoapp/form.dart';
 import 'package:todoapp/homepage.dart';
+import 'package:todoapp/user.dart';
+import 'package:todoapp/username.dart';
+import 'package:todoapp/userdisplay.dart';
+
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+bool? initialbool;
 
 class FirstLogin {
-  var uuid;
-  var todouser;
+  var _uuid;
+  var _todouser;
   Future<void> login() async {
     AuthResult user = await firebaseAuth.signInAnonymously();
-    uuid = user.user.uid;
-    // uuid = 'uuid50';
-    todouser = await DrfDatabase().userretrieve(uuid);
-    if (todouser['uuid'] == null) {
-      await DrfDatabase().usercreate(uuid);
+    _uuid = user.user.uid;
+    // _uuid = 'uuidsample';
+    _todouser = await DrfDatabase().userretrieve(_uuid);
+    if (_todouser['uuid'] == null) {
+      await DrfDatabase().usercreate(_uuid);
+      initialbool = true;
+    } else {
+      initialbool = false;
     }
   }
 }
 
 class Getuuid {
   Future<String> getuuid() async {
-    AuthResult user = await firebaseAuth.signInAnonymously();
-    String uuid = user.user.uid;
-    // uuid = 'uuid50';
-    return uuid;
+    AuthResult _user = await firebaseAuth.signInAnonymously();
+    String _uuid = _user.user.uid;
+    return _uuid;
   }
 }
 
-final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Notificationoperation().notification();
   await FirstLogin().login();
+  if (initialbool == false) {
+    await Notificationoperation().notification();
+  }
   runApp(MyApp());
 }
 
@@ -46,7 +54,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: '/home',
+        initialRoute: initialbool == false ? '/home' : '/username',
         routes: {
           '/home': (context) => MyHomePage(
                 title: 'flutter home',
@@ -54,6 +62,9 @@ class MyApp extends StatelessWidget {
           '/form': (context) => FormPage(),
           '/detail': (context) => DetailPage(),
           '/setting': (context) => SettingPage(),
+          '/user': (context) => UserSetting(),
+          '/username': (context) => UserName(),
+          '/displayuser': (context) => UserDisplay(),
         });
   }
 }
