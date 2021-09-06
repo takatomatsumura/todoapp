@@ -3,8 +3,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp/operation.dart';
 import 'package:intl/intl.dart';
+import 'package:todoapp/main.dart';
 
-class DetailPage extends StatelessWidget {
+String uuid = '';
+Map<String, dynamic> user = {};
+Map<String, dynamic> detail = {};
+
+class DetailPage extends StatefulWidget {
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      var id = ModalRoute.of(context)!.settings.arguments;
+      detail = await DrfDatabase().retrievetodo(id);
+      uuid = await Getuuid().getuuid();
+      user = await DrfDatabase().userretrieve(uuid);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var id = ModalRoute.of(context)!.settings.arguments;
@@ -32,12 +54,14 @@ class DetailPage extends StatelessWidget {
         ],
       ),
       body: Detail(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/form', arguments: id);
-        },
-        child: const Icon(Icons.edit),
-      ),
+      floatingActionButton: detail['owner'] == user['id']
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/form', arguments: id);
+              },
+              child: const Icon(Icons.edit),
+            )
+          : Container(),
     );
   }
 }
@@ -47,10 +71,9 @@ class Detail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var id = ModalRoute.of(context)!.settings.arguments;
-
     return ListView(children: <Widget>[
       FutureBuilder<Map<String, dynamic>>(
-        future: DrfDatabase().retrieveData(id),
+        future: DrfDatabase().retrievetodo(id),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final data = snapshot.data;

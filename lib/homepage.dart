@@ -17,19 +17,21 @@ class _MyHomePageState extends State<MyHomePage> {
   List items = [];
   int overduelength = 0;
   String uuid = '';
+  Map user = {};
   final datetimeformat = DateFormat('y-M-d HH:mm');
   @override
   void initState() {
     super.initState();
     Future(() async {
       uuid = await Getuuid().getuuid();
+      user = await DrfDatabase().userretrieve(uuid);
       setState(() {});
     });
   }
 
   Future todoitem(int index) async {
-    items = await DrfDatabase().sampleData(index, uuid);
-    overduelength = await DrfDatabase().sampleData3(uuid);
+    items = await DrfDatabase().gettodolist(index, uuid);
+    overduelength = await DrfDatabase().getopacitylength(uuid);
     return items;
   }
 
@@ -67,145 +69,143 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (index < overduelength) {
                           return Opacity(
                             opacity: 0.5,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0),
-                              ),
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/detail',
-                                    arguments: items[index]['pk']);
-                              },
-                              child: Slidable(
-                                actionPane: const SlidableDrawerActionPane(),
-                                actionExtentRatio: 0.25,
-                                child: Container(
-                                  color: Colors.white,
-                                  child: ListTile(
-                                    leading: const CircleAvatar(
-                                      backgroundColor: Colors.indigoAccent,
-                                      child: Text(''),
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    title: Text(
-                                      "タイトル：${items[index]['fields']['title']}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                    ),
-                                    subtitle: Text(items[index]['fields']
-                                                ['date'] !=
-                                            null
-                                        ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
-                                        : ''),
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  IconSlideAction(
-                                    caption: 'delete',
-                                    color: Colors.red,
-                                    icon: Icons.delete,
-                                    onTap: () async {
-                                      await DrfDatabase()
-                                          .deleteData(items[index]['pk']);
-                                      setState(() {});
-                                    },
-                                  ),
-                                  IconSlideAction(
-                                    caption: 'edit',
-                                    color: Colors.yellow,
-                                    icon: Icons.edit,
-                                    onTap: () {
-                                      Navigator.pushNamed(context, '/form',
-                                          arguments: items[index]['pk']);
-                                    },
-                                  ),
-                                ],
-                                secondaryActions: <Widget>[
-                                  IconSlideAction(
-                                    caption: 'done',
-                                    color: Colors.lime,
-                                    icon: Icons.check,
-                                    onTap: () async {
-                                      await DrfDatabase().boolchange(
-                                          items[index]['pk'],
-                                          boolvalue: true);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        } else {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.all(0),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/detail',
-                                  arguments: items[index]['pk']);
-                            },
                             child: Slidable(
                               actionPane: const SlidableDrawerActionPane(),
                               actionExtentRatio: 0.25,
-                              child: Container(
-                                color: Colors.white,
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                    backgroundColor: Colors.indigoAccent,
-                                    child: Text(''),
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  title: Text(
-                                    "タイトル：${items[index]['fields']['title']}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
-                                  subtitle: Text(items[index]['fields']
-                                              ['date'] !=
-                                          null
-                                      ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']["date"]).add(const Duration(hours: 9)))}'''
-                                      : ''),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: items[index]['fields']
+                                              ['owner'] ==
+                                          user['id']
+                                      ? Colors.indigo
+                                      : Colors.purple,
                                 ),
+                                title: Text(
+                                  "タイトル：${items[index]['fields']['title']}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                                subtitle: Text(items[index]['fields']['date'] !=
+                                        null
+                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
+                                    : ''),
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/detail',
+                                      arguments: items[index]['pk']);
+                                },
                               ),
-                              actions: <Widget>[
-                                IconSlideAction(
-                                  caption: 'delete',
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                  onTap: () async {
-                                    await DrfDatabase()
-                                        .deleteData(items[index]['pk']);
-                                    await Notificationoperation()
-                                        .notification();
-                                    setState(() {});
-                                  },
-                                ),
-                                IconSlideAction(
-                                  caption: 'edit',
-                                  color: Colors.yellow,
-                                  icon: Icons.edit,
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/form',
-                                        arguments: items[index]['pk']);
-                                  },
-                                ),
-                              ],
-                              secondaryActions: <Widget>[
-                                IconSlideAction(
-                                  caption: 'done',
-                                  color: Colors.lime,
-                                  icon: Icons.check,
-                                  onTap: () async {
-                                    await DrfDatabase().boolchange(
-                                        items[index]['pk'],
-                                        boolvalue: true);
-                                    await Notificationoperation()
-                                        .notification();
-                                    setState(() {});
-                                  },
-                                ),
-                              ],
+                              actions: items[index]['fields']['owner'] ==
+                                      user['id']
+                                  ? <Widget>[
+                                      IconSlideAction(
+                                        caption: 'delete',
+                                        color: Colors.red,
+                                        icon: Icons.delete,
+                                        onTap: () async {
+                                          await DrfDatabase()
+                                              .deletetodo(items[index]['pk']);
+                                          setState(() {});
+                                        },
+                                      ),
+                                      IconSlideAction(
+                                        caption: 'edit',
+                                        color: Colors.yellow,
+                                        icon: Icons.edit,
+                                        onTap: () {
+                                          Navigator.pushNamed(context, '/form',
+                                              arguments: items[index]['pk']);
+                                        },
+                                      ),
+                                    ]
+                                  : <Widget>[],
+                              secondaryActions:
+                                  items[index]['fields']['owner'] == user['id']
+                                      ? <Widget>[
+                                          IconSlideAction(
+                                            caption: 'done',
+                                            color: Colors.lime,
+                                            icon: Icons.check,
+                                            onTap: () async {
+                                              await DrfDatabase().boolchange(
+                                                  items[index]['pk'],
+                                                  boolvalue: true);
+                                              setState(() {});
+                                            },
+                                          ),
+                                        ]
+                                      : <Widget>[],
                             ),
+                          );
+                        } else {
+                          return Slidable(
+                            actionPane: const SlidableDrawerActionPane(),
+                            actionExtentRatio: 0.25,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: items[index]['fields']
+                                            ['owner'] ==
+                                        user['id']
+                                    ? Colors.indigo
+                                    : Colors.purple,
+                              ),
+                              title: Text(
+                                "タイトル：${items[index]['fields']['title']}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                              subtitle: Text(items[index]['fields']['date'] !=
+                                      null
+                                  ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']["date"]).add(const Duration(hours: 9)))}'''
+                                  : ''),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/detail',
+                                    arguments: items[index]['pk']);
+                              },
+                            ),
+                            actions: items[index]['fields']['owner'] ==
+                                    user['id']
+                                ? <Widget>[
+                                    IconSlideAction(
+                                      caption: 'delete',
+                                      color: Colors.red,
+                                      icon: Icons.delete,
+                                      onTap: () async {
+                                        await DrfDatabase()
+                                            .deletetodo(items[index]['pk']);
+                                        await Notificationoperation()
+                                            .notification();
+                                        setState(() {});
+                                      },
+                                    ),
+                                    IconSlideAction(
+                                      caption: 'edit',
+                                      color: Colors.yellow,
+                                      icon: Icons.edit,
+                                      onTap: () {
+                                        Navigator.pushNamed(context, '/form',
+                                            arguments: items[index]['pk']);
+                                      },
+                                    ),
+                                  ]
+                                : <Widget>[],
+                            secondaryActions:
+                                items[index]['fields']['owner'] == user['id']
+                                    ? <Widget>[
+                                        IconSlideAction(
+                                          caption: 'done',
+                                          color: Colors.lime,
+                                          icon: Icons.check,
+                                          onTap: () async {
+                                            await DrfDatabase().boolchange(
+                                                items[index]['pk'],
+                                                boolvalue: true);
+                                            await Notificationoperation()
+                                                .notification();
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ]
+                                    : <Widget>[],
                           );
                         }
                       },
@@ -220,72 +220,71 @@ class _MyHomePageState extends State<MyHomePage> {
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) {
-                        return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(0),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/detail',
-                                arguments: items[index]['pk']);
-                          },
-                          child: Slidable(
-                            actionPane: const SlidableDrawerActionPane(),
-                            actionExtentRatio: 0.25,
-                            child: Container(
-                              color: Colors.white,
-                              child: ListTile(
-                                leading: const CircleAvatar(
-                                  backgroundColor: Colors.indigoAccent,
-                                  child: Text(''),
-                                  foregroundColor: Colors.white,
-                                ),
-                                title: Text(
-                                  "タイトル：${items[index]['fields']['title']}",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                ),
-                                subtitle: Text(items[index]['fields']['date'] !=
-                                        null
-                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
-                                    : ''),
-                              ),
+                        return Slidable(
+                          actionPane: const SlidableDrawerActionPane(),
+                          actionExtentRatio: 0.25,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor:
+                                  items[index]['fields']['owner'] == user['id']
+                                      ? Colors.indigo
+                                      : Colors.purple,
                             ),
-                            actions: <Widget>[
-                              IconSlideAction(
-                                caption: 'delete',
-                                color: Colors.red,
-                                icon: Icons.delete,
-                                onTap: () async {
-                                  await DrfDatabase()
-                                      .deleteData(items[index]['pk']);
-                                  setState(() {});
-                                },
-                              ),
-                              IconSlideAction(
-                                caption: 'edit',
-                                color: Colors.yellow,
-                                icon: Icons.edit,
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/form',
-                                      arguments: items[index]['pk']);
-                                },
-                              ),
-                            ],
-                            secondaryActions: <Widget>[
-                              IconSlideAction(
-                                caption: 'cancel',
-                                color: Colors.blue,
-                                icon: Icons.cancel,
-                                onTap: () async {
-                                  await DrfDatabase().boolchange(
-                                      items[index]['pk'],
-                                      boolvalue: false);
-                                  await Notificationoperation().notification();
-                                  setState(() {});
-                                },
-                              ),
-                            ],
+                            title: Text(
+                              "タイトル：${items[index]['fields']['title']}",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                            subtitle: Text(items[index]['fields']['date'] !=
+                                    null
+                                ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
+                                : ''),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/detail',
+                                  arguments: items[index]['pk']);
+                            },
                           ),
+                          actions: items[index]['fields']['owner'] == user['id']
+                              ? <Widget>[
+                                  IconSlideAction(
+                                    caption: 'delete',
+                                    color: Colors.red,
+                                    icon: Icons.delete,
+                                    onTap: () async {
+                                      await DrfDatabase()
+                                          .deletetodo(items[index]['pk']);
+                                      setState(() {});
+                                    },
+                                  ),
+                                  IconSlideAction(
+                                    caption: 'edit',
+                                    color: Colors.yellow,
+                                    icon: Icons.edit,
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/form',
+                                          arguments: items[index]['pk']);
+                                    },
+                                  ),
+                                ]
+                              : <Widget>[],
+                          secondaryActions:
+                              items[index]['fields']['owner'] == user['id']
+                                  ? <Widget>[
+                                      IconSlideAction(
+                                        caption: 'cancel',
+                                        color: Colors.blue,
+                                        icon: Icons.cancel,
+                                        onTap: () async {
+                                          await DrfDatabase().boolchange(
+                                              items[index]['pk'],
+                                              boolvalue: false);
+                                          await Notificationoperation()
+                                              .notification();
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ]
+                                  : <Widget>[],
                         );
                       },
                     );

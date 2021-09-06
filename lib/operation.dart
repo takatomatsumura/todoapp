@@ -14,25 +14,25 @@ class DrfDatabase {
   final domain2 = '10.0.2.2:8000';
   // final domain = '18.180.75.44';
 
-  Future sampleData(int _index, String _uuid) async {
+  Future gettodolist(int _index, String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/list/$_index/$_uuid',
+      'http://$domain2/todos/todolist/$_index/$_uuid',
     );
     var _jsonlist = response.data['todo'];
     var _datalist = jsonDecode(_jsonlist);
     return _datalist;
   }
 
-  Future sampleData3(String _uuid) async {
+  Future getopacitylength(String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/list/overdue/$_uuid',
+      'http://$domain2/todos/todolist/len/$_uuid',
     );
     var _jsonlist = response.data['listlen'];
     return _jsonlist;
   }
 
   // ignore: type_annotate_public_apis
-  Future<Map<String, dynamic>> retrieveData(var _index) async {
+  Future<Map<String, dynamic>> retrievetodo(var _index) async {
     final responce = await dio.get(
       'http://$domain2/todos/retrieve/$_index',
     );
@@ -40,7 +40,7 @@ class DrfDatabase {
     return _data;
   }
 
-  Future postData(
+  Future createtodo(
       String _title, String _date, String _image, int _owner) async {
     final response = await dio.post(
       'http://$domain2/todos/create',
@@ -55,7 +55,7 @@ class DrfDatabase {
     _data = response.data;
   }
 
-  Future updateData(int _index, String _title, String _date, String _image,
+  Future updatetodo(int _index, String _title, String _date, String _image,
       int _owner) async {
     final dio = Dio();
     final response = await dio.patch(
@@ -80,7 +80,7 @@ class DrfDatabase {
     _data = response.data;
   }
 
-  Future deleteData(int _pk) async {
+  Future deletetodo(int _pk) async {
     final responce = await dio.delete(
       'http://$domain2/todos/delete/$_pk',
     );
@@ -105,7 +105,7 @@ class DrfDatabase {
     _data = responce.data;
   }
 
-  Future userupdate(String _username, int _pk) async {
+  Future usernameupdate(String _username, int _pk) async {
     final response = await dio.patch(
       'http://$domain2/todos/user/update/$_pk',
       data: {
@@ -122,6 +122,33 @@ class DrfDatabase {
     _data = responce.data;
     return _data;
   }
+
+  Future userdisplayupdate(List _displayuser, int _pk) async {
+    final response = await dio.patch(
+      'http://$domain2/todos/user/update/$_pk',
+      data: {
+        'displayuser': _displayuser,
+      },
+    );
+    _data = response.data;
+  }
+
+  Future getnotificationtarget(String _uuid) async {
+    final response = await dio.get(
+      'http://$domain2/todos/notificationtarget/$_uuid',
+    );
+    var _jsonlist = response.data['todo'];
+    var _datalist = jsonDecode(_jsonlist);
+    return _datalist;
+  }
+
+  Future gettargetlength(String _uuid) async {
+    final response = await dio.get(
+      'http://$domain2/todos/notification/overdue/$_uuid',
+    );
+    var _jsonlist = response.data['listlen'];
+    return _jsonlist;
+  }
 }
 
 class Notificationoperation {
@@ -132,8 +159,8 @@ class Notificationoperation {
     var notificationbool = preferences.getBool('notificationbool') ?? true;
     if (notificationbool == true) {
       var uuid = await Getuuid().getuuid();
-      int targetlength = await DrfDatabase().sampleData3(uuid);
-      var notificationtarget = await DrfDatabase().sampleData(0, uuid);
+      int targetlength = await DrfDatabase().gettargetlength(uuid);
+      var notificationtarget = await DrfDatabase().getnotificationtarget(uuid);
       var index = targetlength;
       if (notificationtarget.length != targetlength) {
         final flutterLocalNotificationsPlugin =

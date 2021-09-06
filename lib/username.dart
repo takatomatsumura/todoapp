@@ -6,44 +6,35 @@ import 'package:todoapp/operation.dart';
 class UserName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var _navigationbool = Navigator.of(context).canPop();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('UserName'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_sharp),
-          onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (_) => false,
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.settings),
-              color: Colors.white,
-              iconSize: 40,
-              onPressed: () {
-                Navigator.pushNamed(context, '/setting');
-              })
-        ],
-      ),
-      body: _UserNameWidget(title: 'Sample Aplication'),
+      appBar: _navigationbool == true
+          ? AppBar(
+              title: const Text('UserName'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_sharp),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          : AppBar(
+              title: const Text('UserName'),
+            ),
+      body: UserNameWidget(title: 'Sample Aplication'),
     );
   }
 }
 
-class _UserNameWidget extends StatefulWidget {
-  _UserNameWidget({Key? key, required this.title}) : super(key: key);
-
+class UserNameWidget extends StatefulWidget {
+  UserNameWidget({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
   _UserNameStateWidget createState() => _UserNameStateWidget();
 }
 
-class _UserNameStateWidget extends State {
+class _UserNameStateWidget extends State<UserNameWidget> {
   final _formkey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   var _uuid;
@@ -97,7 +88,7 @@ class _UserNameStateWidget extends State {
               onPressed: () async {
                 if (_formkey.currentState!.validate()) {
                   await DrfDatabase()
-                      .userupdate(_nameController.text, _user['id']);
+                      .usernameupdate(_nameController.text, _user['id']);
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     '/home',

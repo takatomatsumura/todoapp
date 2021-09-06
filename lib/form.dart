@@ -98,7 +98,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
     super.initState();
     if (_id != '') {
       Future(() async {
-        _detail = await DrfDatabase().retrieveData(_id);
+        _detail = await DrfDatabase().retrievetodo(_id);
         titleController.text = _detail['title'];
         dateController.text = dateformat.format(
             DateTime.parse(_detail['date']).add(const Duration(hours: 9)));
@@ -142,92 +142,73 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Stack(children: <Widget>[
-                      TextFormField(
-                        controller: dateController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: '〆切日時',
-                          labelText: '〆切日時',
-                          filled: true,
-                        ),
-                        validator: (_datevalue) {
-                          if (_datevalue == null || _datevalue.isEmpty) {
-                            return '必須項目です';
-                          }
-                        },
+                    child: TextFormField(
+                      controller: dateController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '〆切日時',
+                        labelText: '〆切日時',
+                        filled: true,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 62,
-                        child: TextButton(
-                          onPressed: () async {
-                            final _selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(DateTime.now().year),
-                              lastDate: DateTime(DateTime.now().year + 1),
-                            );
+                      validator: (_datevalue) {
+                        if (_datevalue == null || _datevalue.isEmpty) {
+                          return '必須項目です';
+                        }
+                      },
+                      onTap: () async {
+                        final _selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(DateTime.now().year),
+                          lastDate: DateTime(DateTime.now().year + 1),
+                        );
 
-                            if (_selectedDate != null) {
-                              datestring =
-                                  '''${dateformat.format(_selectedDate)}''';
-                            }
-                            dateController.text =
-                                dateformat.format(_selectedDate!);
-                          },
-                          child: Container(),
-                        ),
-                      )
-                    ]),
+                        if (_selectedDate != null) {
+                          datestring =
+                              '''${dateformat.format(_selectedDate)}''';
+                        }
+                        dateController.text = dateformat.format(_selectedDate!);
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Stack(children: <Widget>[
-                      TextFormField(
-                        controller: timeController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: '〆切時間',
-                            labelText: '〆切時間',
-                            filled: true),
-                        validator: (_timevalue) {
-                          if (_timevalue == null || _timevalue.isEmpty) {
-                            return '必須項目です';
+                    child: TextFormField(
+                      controller: timeController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '〆切時間',
+                          labelText: '〆切時間',
+                          filled: true),
+                      validator: (_timevalue) {
+                        if (_timevalue == null || _timevalue.isEmpty) {
+                          return '必須項目です';
+                        }
+                        return null;
+                      },
+                      onTap: () async {
+                        final _selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (_selectedTime != null) {
+                          if (_selectedTime.minute < 10) {
+                            minute = '0${_selectedTime.minute}';
+                          } else {
+                            minute = '${_selectedTime.minute}';
                           }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 62,
-                        child: TextButton(
-                          onPressed: () async {
-                            final _selectedTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now(),
-                            );
-                            if (_selectedTime != null) {
-                              if (_selectedTime.minute < 10) {
-                                minute = '0${_selectedTime.minute}';
-                              } else {
-                                minute = '${_selectedTime.minute}';
-                              }
-                              if (_selectedTime.hour > 9) {
-                                hour = '${_selectedTime.hour}';
-                              } else {
-                                hour = '0${_selectedTime.hour}';
-                              }
-                              timestring = '$hour:$minute';
-                            }
-                            timeController.text = timestring;
-                          },
-                          child: Container(),
-                        ),
-                      ),
-                    ]),
+                          if (_selectedTime.hour > 9) {
+                            hour = '${_selectedTime.hour}';
+                          } else {
+                            hour = '0${_selectedTime.hour}';
+                          }
+                          timestring = '$hour:$minute';
+                        }
+                        timeController.text = timestring;
+                      },
+                    ),
                   ),
                   _image == null
                       ? Padding(
@@ -279,7 +260,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                         _todouser = await DrfDatabase().userretrieve(uuid);
                         if (_id == '') {
                           await Notificationoperation().notification();
-                          await DrfDatabase().postData(
+                          await DrfDatabase().createtodo(
                             titleController.text,
                             '$datestring $timestring',
                             img64,
@@ -292,7 +273,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                           );
                         } else {
                           await Notificationoperation().notification();
-                          await DrfDatabase().updateData(
+                          await DrfDatabase().updatetodo(
                             _id,
                             titleController.text,
                             '${dateController.text} ${timeController.text}',

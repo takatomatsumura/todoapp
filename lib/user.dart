@@ -18,17 +18,31 @@ class UserSetting extends StatelessWidget {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/username');
-                },
-                child: const Text('ユーザー名の変更'),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/username');
+                    },
+                    child: const Text('ユーザー名の変更'),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/displayuser');
-                },
-                child: const Text('表示するユーザーの変更'),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/displayuser');
+                    },
+                    child: const Text('表示するユーザーの変更'),
+                  ),
+                ),
               ),
             ]),
       ),

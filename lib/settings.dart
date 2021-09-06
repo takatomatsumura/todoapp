@@ -83,7 +83,12 @@ class _SettingPageStateWidget extends State<SettingPageWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Icon(Icons.person),
-                    const Text('ユーザー設定'),
+                    const Text(
+                      'ユーザー設定',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
                   ],
                 ))
           ]),
