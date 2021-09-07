@@ -18,8 +18,7 @@ class FirstLogin {
   var _todouser;
   Future<void> login() async {
     AuthResult user = await firebaseAuth.signInAnonymously();
-    // _uuid = user.user.uid;
-    _uuid = 'uuidsample58';
+    _uuid = user.user.uid;
     _todouser = await DrfDatabase().userretrieve(_uuid);
     if (_todouser['uuid'] == null) {
       await DrfDatabase().usercreate(_uuid);
