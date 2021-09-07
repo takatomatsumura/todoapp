@@ -74,28 +74,24 @@ class _MyHomePageState extends State<MyHomePage> {
                               actionExtentRatio: 0.25,
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundColor: items[index]['fields']
-                                              ['owner'] ==
-                                          user['id']
-                                      ? Colors.indigo
-                                      : Colors.purple,
+                                  backgroundColor:
+                                      items[index]['owner']['id'] == user['id']
+                                          ? Colors.indigo
+                                          : Colors.purple,
                                 ),
                                 title: Text(
-                                  "タイトル：${items[index]['fields']['title']}",
+                                  'タイトル：${items[index]['title']}',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
-                                subtitle: Text(items[index]['fields']['date'] !=
-                                        null
-                                    ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
-                                    : ''),
+                                subtitle: Text(
+                                    '''〆切日時: ${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}\n作成者　: ${items[index]['owner']['name']}'''),
                                 onTap: () {
                                   Navigator.pushNamed(context, '/detail',
-                                      arguments: items[index]['pk']);
+                                      arguments: items[index]['id']);
                                 },
                               ),
-                              actions: items[index]['fields']['owner'] ==
-                                      user['id']
+                              actions: items[index]['owner']['id'] == user['id']
                                   ? <Widget>[
                                       IconSlideAction(
                                         caption: 'delete',
@@ -103,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         icon: Icons.delete,
                                         onTap: () async {
                                           await DrfDatabase()
-                                              .deletetodo(items[index]['pk']);
+                                              .deletetodo(items[index]['id']);
                                           setState(() {});
                                         },
                                       ),
@@ -113,13 +109,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                         icon: Icons.edit,
                                         onTap: () {
                                           Navigator.pushNamed(context, '/form',
-                                              arguments: items[index]['pk']);
+                                              arguments: items[index]['id']);
                                         },
                                       ),
                                     ]
                                   : <Widget>[],
                               secondaryActions:
-                                  items[index]['fields']['owner'] == user['id']
+                                  items[index]['owner']['id'] == user['id']
                                       ? <Widget>[
                                           IconSlideAction(
                                             caption: 'done',
@@ -127,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             icon: Icons.check,
                                             onTap: () async {
                                               await DrfDatabase().boolchange(
-                                                  items[index]['pk'],
+                                                  items[index]['id'],
                                                   boolvalue: true);
                                               setState(() {});
                                             },
@@ -142,28 +138,24 @@ class _MyHomePageState extends State<MyHomePage> {
                             actionExtentRatio: 0.25,
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundColor: items[index]['fields']
-                                            ['owner'] ==
-                                        user['id']
-                                    ? Colors.indigo
-                                    : Colors.purple,
+                                backgroundColor:
+                                    items[index]['id'] == user['id']
+                                        ? Colors.indigo
+                                        : Colors.purple,
                               ),
                               title: Text(
-                                "タイトル：${items[index]['fields']['title']}",
+                                "タイトル：${items[index]['title']}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               ),
-                              subtitle: Text(items[index]['fields']['date'] !=
-                                      null
-                                  ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']["date"]).add(const Duration(hours: 9)))}'''
-                                  : ''),
+                              subtitle: Text(
+                                  '''〆切日時: ${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}\n作成者　: ${items[index]['owner']['name']}'''),
                               onTap: () {
                                 Navigator.pushNamed(context, '/detail',
-                                    arguments: items[index]['pk']);
+                                    arguments: items[index]['id']);
                               },
                             ),
-                            actions: items[index]['fields']['owner'] ==
-                                    user['id']
+                            actions: items[index]['owner']['id'] == user['id']
                                 ? <Widget>[
                                     IconSlideAction(
                                       caption: 'delete',
@@ -171,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       icon: Icons.delete,
                                       onTap: () async {
                                         await DrfDatabase()
-                                            .deletetodo(items[index]['pk']);
+                                            .deletetodo(items[index]['id']);
                                         await Notificationoperation()
                                             .notification();
                                         setState(() {});
@@ -183,13 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                       icon: Icons.edit,
                                       onTap: () {
                                         Navigator.pushNamed(context, '/form',
-                                            arguments: items[index]['pk']);
+                                            arguments: items[index]['id']);
                                       },
                                     ),
                                   ]
                                 : <Widget>[],
                             secondaryActions:
-                                items[index]['fields']['owner'] == user['id']
+                                items[index]['owner']['id'] == user['id']
                                     ? <Widget>[
                                         IconSlideAction(
                                           caption: 'done',
@@ -197,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           icon: Icons.check,
                                           onTap: () async {
                                             await DrfDatabase().boolchange(
-                                                items[index]['pk'],
+                                                items[index]['id'],
                                                 boolvalue: true);
                                             await Notificationoperation()
                                                 .notification();
@@ -226,25 +218,23 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor:
-                                  items[index]['fields']['owner'] == user['id']
+                                  items[index]['owner']['id'] == user['id']
                                       ? Colors.indigo
                                       : Colors.purple,
                             ),
                             title: Text(
-                              "タイトル：${items[index]['fields']['title']}",
+                              "タイトル：${items[index]['title']}",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
-                            subtitle: Text(items[index]['fields']['date'] !=
-                                    null
-                                ? '''〆切日時：${datetimeformat.format(DateTime.parse(items[index]['fields']['date']).add(const Duration(hours: 9)))}'''
-                                : ''),
+                            subtitle: Text(
+                                '''〆切日時: ${datetimeformat.format(DateTime.parse(items[index]['date']).add(const Duration(hours: 9)))}\n作成者　: ${items[index]['owner']['name']}'''),
                             onTap: () {
                               Navigator.pushNamed(context, '/detail',
-                                  arguments: items[index]['pk']);
+                                  arguments: items[index]['id']);
                             },
                           ),
-                          actions: items[index]['fields']['owner'] == user['id']
+                          actions: items[index]['owner']['id'] == user['id']
                               ? <Widget>[
                                   IconSlideAction(
                                     caption: 'delete',
@@ -252,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.delete,
                                     onTap: () async {
                                       await DrfDatabase()
-                                          .deletetodo(items[index]['pk']);
+                                          .deletetodo(items[index]['id']);
                                       setState(() {});
                                     },
                                   ),
@@ -262,13 +252,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                     icon: Icons.edit,
                                     onTap: () {
                                       Navigator.pushNamed(context, '/form',
-                                          arguments: items[index]['pk']);
+                                          arguments: items[index]['id']);
                                     },
                                   ),
                                 ]
                               : <Widget>[],
                           secondaryActions:
-                              items[index]['fields']['owner'] == user['id']
+                              items[index]['owner']['id'] == user['id']
                                   ? <Widget>[
                                       IconSlideAction(
                                         caption: 'cancel',
@@ -276,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         icon: Icons.cancel,
                                         onTap: () async {
                                           await DrfDatabase().boolchange(
-                                              items[index]['pk'],
+                                              items[index]['id'],
                                               boolvalue: false);
                                           await Notificationoperation()
                                               .notification();

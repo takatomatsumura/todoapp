@@ -11,21 +11,19 @@ class DrfDatabase {
   final dio = Dio();
   List datalist = [];
   var _data;
-  final domain2 = '10.0.2.2:8000';
+  final domain = '10.0.2.2:8000';
   // final domain = '18.180.75.44';
 
   Future gettodolist(int _index, String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/todolist/$_index/$_uuid',
+      'http://$domain/todos/todolist/$_index/$_uuid',
     );
-    var _jsonlist = response.data['todo'];
-    var _datalist = jsonDecode(_jsonlist);
-    return _datalist;
+    return response.data['todo'];
   }
 
   Future getopacitylength(String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/todolist/len/$_uuid',
+      'http://$domain/todos/todolist/len/$_uuid',
     );
     var _jsonlist = response.data['listlen'];
     return _jsonlist;
@@ -34,7 +32,7 @@ class DrfDatabase {
   // ignore: type_annotate_public_apis
   Future<Map<String, dynamic>> retrievetodo(var _index) async {
     final responce = await dio.get(
-      'http://$domain2/todos/retrieve/$_index',
+      'http://$domain/todos/retrieve/$_index',
     );
     _data = responce.data as Map<String, dynamic>;
     return _data;
@@ -43,7 +41,7 @@ class DrfDatabase {
   Future createtodo(
       String _title, String _date, String _image, int _owner) async {
     final response = await dio.post(
-      'http://$domain2/todos/create',
+      'http://$domain/todos/create',
       data: {
         'title': _title,
         'date': _date,
@@ -59,7 +57,7 @@ class DrfDatabase {
       int _owner) async {
     final dio = Dio();
     final response = await dio.patch(
-      'http://$domain2/todos/update/$_index',
+      'http://$domain/todos/update/$_index',
       data: {
         'title': _title,
         'date': _date,
@@ -72,7 +70,7 @@ class DrfDatabase {
 
   Future boolchange(int _pk, {required bool boolvalue}) async {
     final response = await dio.patch(
-      'http://$domain2/todos/update/$_pk',
+      'http://$domain/todos/update/$_pk',
       data: {
         'donebool': boolvalue,
       },
@@ -82,21 +80,21 @@ class DrfDatabase {
 
   Future deletetodo(int _pk) async {
     final responce = await dio.delete(
-      'http://$domain2/todos/delete/$_pk',
+      'http://$domain/todos/delete/$_pk',
     );
     _data = responce.data;
   }
 
   Future userretrieve(String _uuid) async {
     final responce = await dio.get(
-      'http://$domain2/todos/user/retrieve/$_uuid',
+      'http://$domain/todos/user/retrieve/$_uuid',
     );
     return responce.data['todouser'];
   }
 
   Future usercreate(String _uuid) async {
     final responce = await dio.post(
-      'http://$domain2/todos/user/create',
+      'http://$domain/todos/user/create',
       data: {
         'uuid': _uuid,
         'name': 'name',
@@ -107,7 +105,7 @@ class DrfDatabase {
 
   Future usernameupdate(String _username, int _pk) async {
     final response = await dio.patch(
-      'http://$domain2/todos/user/update/$_pk',
+      'http://$domain/todos/user/update/$_pk',
       data: {
         'name': _username,
       },
@@ -117,7 +115,7 @@ class DrfDatabase {
 
   Future userlist() async {
     final responce = await dio.get(
-      'http://$domain2/todos/user/list',
+      'http://$domain/todos/user/list',
     );
     _data = responce.data;
     return _data;
@@ -125,7 +123,7 @@ class DrfDatabase {
 
   Future userdisplayupdate(List _displayuser, int _pk) async {
     final response = await dio.patch(
-      'http://$domain2/todos/user/update/$_pk',
+      'http://$domain/todos/user/update/$_pk',
       data: {
         'displayuser': _displayuser,
       },
@@ -135,7 +133,7 @@ class DrfDatabase {
 
   Future getnotificationtarget(String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/notificationtarget/$_uuid',
+      'http://$domain/todos/notificationtarget/$_uuid',
     );
     var _jsonlist = response.data['todo'];
     var _datalist = jsonDecode(_jsonlist);
@@ -144,7 +142,7 @@ class DrfDatabase {
 
   Future gettargetlength(String _uuid) async {
     final response = await dio.get(
-      'http://$domain2/todos/notification/overdue/$_uuid',
+      'http://$domain/todos/notification/overdue/$_uuid',
     );
     var _jsonlist = response.data['listlen'];
     return _jsonlist;

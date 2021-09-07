@@ -117,6 +117,19 @@ class Detail extends StatelessWidget {
                             ),
                           )
                         ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('作成者　：')),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${data['owner']['name']}',
+                            ),
+                          )
+                        ]),
                     const Text('画像'),
                     (data['image'] == 'null' || data['image'] == '')
                         ? const Text('画像はありません')
