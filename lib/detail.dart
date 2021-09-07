@@ -5,9 +5,10 @@ import 'package:todoapp/operation.dart';
 import 'package:intl/intl.dart';
 import 'package:todoapp/main.dart';
 
-String uuid = '';
-Map<String, dynamic> user = {};
-Map<String, dynamic> detail = {};
+String _uuid = '';
+Map<String, dynamic> _user = {};
+Map<String, dynamic> _detail = {};
+Widget _editbutton = Container();
 
 class DetailPage extends StatefulWidget {
   @override
@@ -20,16 +21,26 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
     Future(() async {
       var id = ModalRoute.of(context)!.settings.arguments;
-      detail = await DrfDatabase().retrievetodo(id);
-      uuid = await Getuuid().getuuid();
-      user = await DrfDatabase().userretrieve(uuid);
-      setState(() {});
+      _detail = await DrfDatabase().retrievetodo(id);
+      _uuid = await Getuuid().getuuid();
+      _user = await DrfDatabase().userretrieve(_uuid);
+      if (_detail['owner']['id'] == _user['id']) {
+        _editbutton = FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/form', arguments: id);
+          },
+          child: const Icon(Icons.edit),
+        );
+        setState(() {});
+      } else {
+        _editbutton = Container();
+        setState(() {});
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var id = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo'),
@@ -54,14 +65,7 @@ class _DetailPageState extends State<DetailPage> {
         ],
       ),
       body: Detail(),
-      floatingActionButton: detail['owner'] == user['id']
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/form', arguments: id);
-              },
-              child: const Icon(Icons.edit),
-            )
-          : Container(),
+      floatingActionButton: _editbutton,
     );
   }
 }
