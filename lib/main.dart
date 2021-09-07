@@ -18,11 +18,14 @@ class FirstLogin {
   var _todouser;
   Future<void> login() async {
     AuthResult user = await firebaseAuth.signInAnonymously();
-    _uuid = user.user.uid;
-    // _uuid = 'uuidsample';
+    // _uuid = user.user.uid;
+    _uuid = 'uuidsample58';
     _todouser = await DrfDatabase().userretrieve(_uuid);
     if (_todouser['uuid'] == null) {
       await DrfDatabase().usercreate(_uuid);
+      _todouser = await DrfDatabase().userretrieve(_uuid);
+      var _initialdisplay = [_todouser['id']];
+      await DrfDatabase().userdisplayupdate(_initialdisplay, _todouser['id']);
       initialbool = true;
     } else {
       initialbool = false;

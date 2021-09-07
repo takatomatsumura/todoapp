@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundColor:
-                                    items[index]['id'] == user['id']
+                                    items[index]['owner']['id'] == user['id']
                                         ? Colors.indigo
                                         : Colors.purple,
                               ),
