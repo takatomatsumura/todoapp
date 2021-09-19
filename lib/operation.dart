@@ -11,8 +11,8 @@ class DrfDatabase {
   final dio = Dio();
   List datalist = [];
   var _data;
-  // final domain = '10.0.2.2:8000';
-  final domain = '18.180.75.44';
+  final domain = '10.0.2.2:8000';
+  final domain2 = '18.180.75.44';
 
   Future gettodolist(int _index, String _uuid) async {
     final response = await dio.get(
@@ -38,39 +38,42 @@ class DrfDatabase {
     return _data;
   }
 
-  Future createtodo(
-      String _title, String _date, String _image, int _owner) async {
-    final response = await dio.post(
-      'http://$domain/todos/create',
-      data: {
-        'title': _title,
-        'date': _date,
-        'donebool': false,
-        'image': _image,
-        'owner': _owner,
-      },
-    );
+  Future createtodo(String _title, String _date, int _owner, var _image) async {
+    var _requestimage = null;
+    if (_image != null) {
+      _requestimage = await MultipartFile.fromFile(_image,
+          filename: 'requestimage500.jpeg');
+    }
+    final response = await dio.post('http://$domain/todos/create',
+        data: FormData.fromMap({
+          'title': _title,
+          'date': _date,
+          'owner': _owner,
+          'image': _requestimage,
+        }));
     _data = response.data;
   }
 
-  Future updatetodo(int _index, String _title, String _date, String _image,
-      int _owner) async {
-    final dio = Dio();
-    final response = await dio.patch(
-      'http://$domain/todos/update/$_index',
-      data: {
-        'title': _title,
-        'date': _date,
-        'image': _image,
-        'owner': _owner,
-      },
-    );
+  Future updatetodo(
+      int _index, String _title, String _date, int _owner, var _image) async {
+    var _requestimage = null;
+    if (_image != null) {
+      _requestimage = await MultipartFile.fromFile(_image,
+          filename: 'requestimage500.jpeg');
+    }
+    final response = await dio.patch('http://$domain/todos/update/$_index',
+        data: FormData.fromMap({
+          'title': _title,
+          'date': _date,
+          'owner': _owner,
+          'image': _requestimage,
+        }));
     _data = response.data;
   }
 
   Future boolchange(int _pk, {required bool boolvalue}) async {
     final response = await dio.patch(
-      'http://$domain/todos/update/$_pk',
+      'http://$domain/todos/donebool/$_pk',
       data: {
         'donebool': boolvalue,
       },

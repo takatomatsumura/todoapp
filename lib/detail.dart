@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp/operation.dart';
@@ -135,12 +134,13 @@ class Detail extends StatelessWidget {
                           )
                         ]),
                     const Text('画像'),
-                    (data['image'] == 'null' || data['image'] == '')
+                    data['image'] == null
                         ? const Text('画像はありません')
                         : ConstrainedBox(
                             constraints: const BoxConstraints(
                                 maxWidth: 300, maxHeight: 300),
-                            child: Image.memory(base64Decode(data['image']))),
+                            child: Image.network(data['image']),
+                          ),
                   ]),
             );
           } else {

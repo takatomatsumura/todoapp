@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:todoapp/operation.dart';
 import 'package:todoapp/main.dart';
@@ -58,37 +57,31 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
   String timestring = '';
   var _image;
   final picker = ImagePicker();
-  var _uintlist;
-  String img64 = '';
   String uuid = '';
   String detailimage = '';
   var _todouser;
   var _detail;
   final dateformat = DateFormat('y-M-d');
   final timeformat = DateFormat('HH:mm');
+  var requestimage;
+  String? _imageurl;
 
   Future _getImagecamera() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _uintlist = File(pickedFile.path).readAsBytesSync();
-      img64 = base64Encode(_uintlist);
-    }
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        requestimage = pickedFile.path;
       }
     });
   }
 
   Future _getImagegallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      _uintlist = File(pickedFile.path).readAsBytesSync();
-      img64 = base64Encode(_uintlist);
-    }
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        requestimage = pickedFile.path;
       }
     });
   }
@@ -104,8 +97,7 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
             DateTime.parse(_detail['date']).add(const Duration(hours: 9)));
         timeController.text = timeformat.format(
             DateTime.parse(_detail['date']).add(const Duration(hours: 9)));
-        img64 = await _detail['image'];
-        detailimage = await _detail['image'];
+        _imageurl = _detail['image'];
         setState(() {});
       });
     }
@@ -213,14 +205,12 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                   _image == null
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: detailimage == ''
+                          child: _imageurl == null
                               ? const Text('画像が選択されていません。')
                               : ConstrainedBox(
                                   constraints: const BoxConstraints(
                                       maxHeight: 300, maxWidth: 300),
-                                  child: Image.memory(
-                                    base64Decode(detailimage),
-                                  ),
+                                  child: Image.network(_imageurl!),
                                 ),
                         )
                       : Padding(
@@ -263,8 +253,8 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                           await DrfDatabase().createtodo(
                             titleController.text,
                             '$datestring $timestring',
-                            img64,
                             _todouser['id'],
+                            requestimage,
                           );
                           Navigator.pushNamedAndRemoveUntil(
                             context,
@@ -277,8 +267,8 @@ class _FormPageStateWidget extends State<_FormPageWidget> {
                             _id,
                             titleController.text,
                             '${dateController.text} ${timeController.text}',
-                            img64,
                             _todouser['id'],
+                            requestimage,
                           );
                           Navigator.pushNamed(context, '/detail',
                               arguments: _id);
