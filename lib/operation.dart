@@ -11,8 +11,8 @@ class DrfDatabase {
   final dio = Dio();
   List datalist = [];
   var _data;
-  final domain = '10.0.2.2:8000';
-  final domain2 = '18.180.75.44';
+  // final domain = '10.0.2.2:8000';
+  final domain = '18.180.75.44';
 
   Future gettodolist(int _index, String _uuid) async {
     final response = await dio.get(
@@ -38,11 +38,12 @@ class DrfDatabase {
     return _data;
   }
 
+  // ignore: type_annotate_public_apis
   Future createtodo(String _title, String _date, int _owner, var _image) async {
-    var _requestimage = null;
+    var _requestimage;
     if (_image != null) {
       _requestimage = await MultipartFile.fromFile(_image,
-          filename: 'requestimage500.jpeg');
+          filename: '$_title${_date}image.jpeg');
     }
     final response = await dio.post('http://$domain/todos/create',
         data: FormData.fromMap({
@@ -55,11 +56,16 @@ class DrfDatabase {
   }
 
   Future updatetodo(
-      int _index, String _title, String _date, int _owner, var _image) async {
-    var _requestimage = null;
+      int _index,
+      String _title,
+      String _date,
+      int _owner,
+      // ignore: type_annotate_public_apis
+      var _image) async {
+    var _requestimage;
     if (_image != null) {
       _requestimage = await MultipartFile.fromFile(_image,
-          filename: 'requestimage500.jpeg');
+          filename: '$_title${_date}image.jpeg');
     }
     final response = await dio.patch('http://$domain/todos/update/$_index',
         data: FormData.fromMap({
